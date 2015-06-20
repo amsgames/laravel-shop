@@ -53,7 +53,7 @@ trait ShopItemTrait
      *
      * @return string
      */
-    public function getShopNameAttribute()
+    public function getDisplayNameAttribute()
     {
         if ($this->hasObject) return $this->object->shopName;
         return isset($this->itemName)

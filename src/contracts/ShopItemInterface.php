@@ -48,7 +48,7 @@ interface ShopItemInterface
      *
      * @return string
      */
-    public function getShopNameAttribute();
+    public function getDisplayNameAttribute();
 
     /**
      * Returns shop it.
