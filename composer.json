@@ -31,5 +31,6 @@
         "psr-4": {
             "Amsgames\\LaravelShop\\": "src"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
