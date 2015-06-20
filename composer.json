@@ -1,0 +1,27 @@
+{
+    "name": "amsgames/laravel-shop",
+    "description": "Package set to provide shop or e-commerce functionality (such as CART, ORDERS, TRANSACTIONS and ITEMS) to Laravel for customizable builds.",
+    "license": "MIT",
+    "keywords": ["shop","laravel","cart","orders","transactions"],
+    "authors": [
+        {
+            "name": "Amsgames, LLC",
+            "email": "support@amsgames.com"
+        },
+        {
+            "name": "Alejandro Mostajo",
+            "email": "amostajo@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.1",
+    },
+    "autoload": {
+        "psr-4": {
+            "Amsgames\\LaravelShop\\": "src"
+        }
+    }
+}
