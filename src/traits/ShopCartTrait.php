@@ -13,6 +13,7 @@ namespace Amsgames\LaravelShop\Traits;
  */
 
 use Illuminate\Support\Facades\Config;
+use Illuminate\Contracts\Auth\Guard;
 use InvalidArgumentException;
 
 trait ShopCartTrait
@@ -207,7 +208,11 @@ trait ShopCartTrait
      */
     public function scopeCurrent($query)
     {
-        return $query->scopeWhereCurrent()->first();
+        $cart = $query->scopeWhereCurrent()->first();
+        if (empty($cart)) {
+            $cart = {Config::get('shop.cart')}::create(['user_id' =>  Guard::user()->shopId]);
+        }
+        return $cart;
     }
 
 }

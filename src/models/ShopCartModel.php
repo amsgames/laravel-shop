@@ -30,6 +30,13 @@ class ShopCartModel extends Model implements ShopCartInterface
     protected $table;
 
     /**
+     * Fillable attributes for mass assignment.
+     *
+     * @var array
+     */
+    protected $fillable = ['user_id'];
+
+    /**
      * Creates a new instance of the model.
      *
      * @param array $attributes

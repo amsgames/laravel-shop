@@ -43,8 +43,8 @@ class ShopSetupTables extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->foreign('cart_id')
-                ->references('{{ $cartTable }}')
-                ->on('id')
+                ->references('id')
+                ->on('{{ $cartTable }}')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->unique(['sku', 'cart_id']);
