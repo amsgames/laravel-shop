@@ -93,7 +93,7 @@ trait ShopCartTrait
                                     ),
                 'currency'      => Config::get('shop.currency'),
                 'quantity'      => $quantity,
-                'class'         => is_array($item) ? 'array' : $reflection->getName(),
+                'class'         => is_array($item) ? null : $reflection->getName(),
                 'reference_id'  => is_array($item) ? null : $item->shopId,
             ]);
             $this->items()->save($cartItem);
@@ -103,6 +103,7 @@ trait ShopCartTrait
                 : $cartItem->quantity + $quantity;
             $cartItem->save();
         }
+        return $this;
     }
 
     /**
@@ -128,10 +129,8 @@ trait ShopCartTrait
                 if ($cartItem->quantity > 0) return true;
             }
             $cartItem->delete();
-            return true;
-        } else {
-            return false;
         }
+        return $this;
     }
 
     /**
@@ -180,7 +179,7 @@ trait ShopCartTrait
      */
     public function scopeWhereUser($query, $userId)
     {
-        return $query->with('items')->where('user_id', $userId);
+        return $query->where('user_id', $userId);
     }
 
     /**
