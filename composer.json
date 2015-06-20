@@ -19,9 +19,15 @@
         "illuminate/support": "~5.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.1"
+        "phpunit/phpunit": "~4.1",
+        "mockery/mockery": "dev-master",
+        "illuminate/database": "~5.0",
+        "sami/sami": "dev-master"
     },
     "autoload": {
+        "classmap": [
+            "src/commands"
+        ],
         "psr-4": {
             "Amsgames\\LaravelShop\\": "src"
         }
