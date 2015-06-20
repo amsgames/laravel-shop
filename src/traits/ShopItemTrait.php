@@ -55,7 +55,7 @@ trait ShopItemTrait
      */
     public function getDisplayNameAttribute()
     {
-        if ($this->hasObject) return $this->object->shopName;
+        if ($this->hasObject) return $this->object->displayName;
         return isset($this->itemName)
             ? $this->attributes[$this->itemName]
             : (array_key_exists('name', $this->attributes)
