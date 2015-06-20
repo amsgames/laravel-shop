@@ -49,7 +49,7 @@ trait ShopItemTrait
     }
 
     /**
-     * Returns item description.
+     * Returns item name.
      *
      * @return string
      */

@@ -42,13 +42,13 @@ interface ShopItemInterface
      * @return mixed
      */
     public function getObjectAttribute();
-
+    
     /**
-     * Returns shop description.
+     * Returns item name.
      *
      * @return string
      */
-    public function getShopDescriptionAttribute();
+    public function getShopNameAttribute();
 
     /**
      * Returns shop it.
