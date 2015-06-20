@@ -53,13 +53,13 @@ trait ShopItemTrait
      *
      * @return string
      */
-    public function getShopDescriptionAttribute()
+    public function getShopNameAttribute()
     {
-        if ($this->hasObject) return $this->object->shopDescription;
-        return isset($this->itemDescription)
-            ? $this->attributes[$this->itemDescription]
-            : (array_key_exists('description', $this->attributes)
-                ? $this->attributes['description']
+        if ($this->hasObject) return $this->object->shopName;
+        return isset($this->itemName)
+            ? $this->attributes[$this->itemName]
+            : (array_key_exists('name', $this->attributes)
+                ? $this->attributes['name']
                 : ''
             );
     }
@@ -89,5 +89,28 @@ trait ShopItemTrait
         }
         return \route($this->itemRouteName, $params);
     }
+
+    /**
+     * Returns price formatted for display.
+     *
+     * @return string
+     */
+    public function getDisplayPriceAttribute()
+    {
+        return preg_replace(
+            [
+                '/:symbol/',
+                '/:price/',
+                '/:currency/'
+            ],
+            [
+                Config::get('shop.currency_symbol'),
+                $this->attributes['price'],
+                Config::get('shop.currency')
+            ],
+            Config::get('shop.display_price_format')
+        );
+    }
+
 
 }

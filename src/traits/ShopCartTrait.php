@@ -82,8 +82,17 @@ trait ShopCartTrait
                 'user_id'       => $this->user->shopId,
                 'sku'           => is_array($item) ? $item['sku'] : $item->sku,
                 'price'         => is_array($item) ? $item['price'] : $item->price,
+                'tax'           => is_array($item) 
+                                    ? (array_key_exists('tax', $item)
+                                        ?   $item['tax']
+                                        :   0
+                                    ) 
+                                    : (isset($item->tax) && !empty($item->tax)
+                                        ?   $item->tax
+                                        :   0
+                                    ),
+                'currency'      => Config::get('shop.currency'),
                 'quantity'      => $quantity,
-                'description'   => is_array($item) ? $item['description'] : $item->shopDescription,
                 'class'         => is_array($item) ? 'array' : $reflection->getName(),
                 'reference_id'  => is_array($item) ? null : $item->shopId,
             ]);

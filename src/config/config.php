@@ -74,4 +74,39 @@ return [
     */
     'item_table' => 'item',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Shop currency code
+    |--------------------------------------------------------------------------
+    |
+    | Currency to use within shop.
+    |
+    */
+    'currency' => 'USD',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shop currency symbol
+    |--------------------------------------------------------------------------
+    |
+    | Currency symbol to use within shop.
+    |
+    */
+    'currency_symbol' => '$',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Format with which to display prices across the store.
+    |--------------------------------------------------------------------------
+    |
+    | :symbol   = Currency symbol. i.e. "$"
+    | :price    = Price. i.e. "0.99"
+    | :currency = Currency code. i.e. "USD"
+    |
+    | Example format: ':symbol:price (:currency)'
+    | Example result: '$0.99 (USD)'
+    |
+    */
+    'display_price_format' => ':symbol:price',
+
 ];

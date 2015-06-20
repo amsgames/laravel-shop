@@ -48,7 +48,7 @@ class ShopItemModel extends Model implements ShopItemInterface
      *
      * @var string
      */
-    protected $fillable = ['user_id', 'sku', 'price', 'quantity', 'description', 'class', 'reference_id'];
+    protected $fillable = ['user_id', 'sku', 'price', 'tax', 'currency', 'quantity', 'class', 'reference_id'];
 
     /**
      * Creates a new instance of the model.
