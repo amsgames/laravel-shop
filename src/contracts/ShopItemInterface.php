@@ -34,7 +34,7 @@ interface ShopItemInterface
      *
      * @return bool
      */
-    public function hasObject();
+    public function getHasObjectAttribute();
 
     /**
      * Returns attached object.

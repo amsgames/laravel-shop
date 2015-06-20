@@ -44,6 +44,13 @@ class ShopItemModel extends Model implements ShopItemInterface
     protected $itemRouteParams = [];
 
     /**
+     * Name of the attributes to be included in the route params.
+     *
+     * @var string
+     */
+    protected $fillable = ['user_id', 'sku', 'price', 'quantity', 'description', 'class', 'reference_id'];
+
+    /**
      * Creates a new instance of the model.
      *
      * @param array $attributes

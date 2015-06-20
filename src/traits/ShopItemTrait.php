@@ -23,9 +23,9 @@ trait ShopItemTrait
      *
      * @return bool
      */
-    public function hasObject() 
+    public function getHasObjectAttribute() 
     {
-        return empty($this->attributes['class']);
+        return array_key_exists('class', $this->attributes) && !empty($this->attributes['class']);
     }
 
     /**
@@ -45,7 +45,7 @@ trait ShopItemTrait
      */
     public function getObjectAttribute()
     {
-        return $this->hasObject ? {$this->attributes['class']}::find($this->attributes['reference_id']) : null;
+        return $this->hasObject ? call_user_func($this->attributes['class'] . '::find', $this->attributes['reference_id']) : null;
     }
 
     /**

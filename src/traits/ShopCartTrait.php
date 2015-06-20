@@ -13,24 +13,11 @@ namespace Amsgames\LaravelShop\Traits;
  */
 
 use Illuminate\Support\Facades\Config;
-use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 
 trait ShopCartTrait
 {
-    /**
-     * Const that indicates if quantity should reset when adding an item.
-     *
-     * @var bool
-     */
-    const QUANTITY_RESET    = true;
-
-    /**
-     * Const that indicates if quantity be added to current when adding an item.
-     *
-     * @var bool
-     */
-    const QUANTITY_ADDITION = false;
 
     /**
      * Boot the user model
@@ -78,20 +65,21 @@ trait ShopCartTrait
      * @param mixed $item     Item to add, can be an Store Item, a Model with ShopItemTrait or an array.
      * @param int   $quantity Item quantity in cart.
      */
-    public function add($item, $quantity = 1, $quantityReset = self::QUANTITY_ADDITION)
+    public function add($item, $quantity = 1, $quantityReset = false)
     {
         if (!is_array($item) && !$item->isShoppable) return;
         // Get added item
-        $item = $this->items
+        $cartItem = $this->items
             ->where('sku', is_array($item) ? $item['sku'] : $item->sku)
             ->first();
         // Add new or sum quantity
-        if (empty($item)) {
+        if (empty($cartItem)) {
             $reflection = null;
             if (is_object($item)) {
-                $reflection = new ReflectionClass($item);
+                $reflection = new \ReflectionClass($item);
             }
-            $item = {Config::get('shop.item')}::create([
+            $cartItem = call_user_func( Config::get('shop.item') . '::create', [
+                'user_id'       => $this->user->shopId,
                 'sku'           => is_array($item) ? $item['sku'] : $item->sku,
                 'price'         => is_array($item) ? $item['price'] : $item->price,
                 'quantity'      => $quantity,
@@ -99,12 +87,12 @@ trait ShopCartTrait
                 'class'         => is_array($item) ? 'array' : $reflection->getName(),
                 'reference_id'  => is_array($item) ? null : $item->shopId,
             ]);
-            $this->items->attach($item->id);
+            $this->items()->save($cartItem);
         } else {
-            $item->quantity = $quantityReset 
+            $cartItem->quantity = $quantityReset 
                 ? $quantity 
-                : $item->quantity + $quantity;
-            $item->save();
+                : $cartItem->quantity + $quantity;
+            $cartItem->save();
         }
     }
 
@@ -120,18 +108,17 @@ trait ShopCartTrait
     public function remove($item, $quantity = 0)
     {
         // Get item
-        $item = $this->items
+        $cartItem = $this->items
             ->where('sku', is_array($item) ? $item['sku'] : $item->sku)
             ->first();
         // Remove or decrease quantity
-        if (!empty($item)) {
+        if (!empty($cartItem)) {
             if (!empty($quantity)) {
-                $item->quantity -= $quantity;
-                $item->save();
-                if ($item->quantity > 0) return true;
+                $cartItem->quantity -= $quantity;
+                $cartItem->save();
+                if ($cartItem->quantity > 0) return true;
             }
-            $this->items->detach($item->id);
-            $item->delete();
+            $cartItem->delete();
             return true;
         } else {
             return false;
@@ -184,7 +171,7 @@ trait ShopCartTrait
      */
     public function scopeWhereUser($query, $userId)
     {
-        return $query->where('user_id', $userId);
+        return $query->with('items')->where('user_id', $userId);
     }
 
     /**
@@ -196,7 +183,8 @@ trait ShopCartTrait
      */
     public function scopeWhereCurrent($query)
     {
-        return $query->whereUser('user_id', Guard::user()->shopId);
+        if (Auth::guest()) return $query;
+        return $query->whereUser('user_id', Auth::user()->shopId);
     }
 
     /**
@@ -208,9 +196,30 @@ trait ShopCartTrait
      */
     public function scopeCurrent($query)
     {
-        $cart = $query->scopeWhereCurrent()->first();
+        if (Auth::guest()) return;
+        $cart = $query->whereCurrent()->first();
         if (empty($cart)) {
-            $cart = {Config::get('shop.cart')}::create(['user_id' =>  Guard::user()->shopId]);
+            $cart = call_user_func( Config::get('shop.cart') . '::create', [
+                'user_id' =>  Auth::user()->shopId
+            ]);
+        }
+        return $cart;
+    }
+
+    /**
+     * Scope to current user cart and returns class model.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query  Query.
+     *
+     * @return this
+     */
+    public function scopeFindByUser($query, $userId)
+    {
+        $cart = $query->whereUser($userId)->first();
+        if (empty($cart)) {
+            $cart = call_user_func( Config::get('shop.cart') . '::create', [
+                'user_id' =>  $userId
+            ]);
         }
         return $cart;
     }
