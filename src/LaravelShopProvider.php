@@ -47,9 +47,23 @@ class LaravelShopProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerShop();
+
         $this->registerCommands();
 
         $this->mergeConfig();
+    }
+
+    /**
+     * Register the application bindings.
+     *
+     * @return void
+     */
+    private function registerShop()
+    {
+        $this->app->bind('shop', function ($app) {
+            return new LaravelShop($app);
+        });
     }
 
     /**
