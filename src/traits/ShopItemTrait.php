@@ -12,7 +12,7 @@ namespace Amsgames\LaravelShop\Traits;
  * @package Amsgames\LaravelShop
  */
 
-use Amsgames\LaravelShop\LaravelShopFacade;
+use Shop;
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
 

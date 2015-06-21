@@ -11,6 +11,7 @@ Laravel shop adds shopping cart, orders and payments to your new or existing pro
 - [Configuration](#configuration)
     - [Database Setup](#database-setup)
     - [Models Setup](#models)
+        - [Shop](#shop)
         - [Item](#item)
         - [Cart](#cart)
         - [User](#user)
@@ -305,6 +306,15 @@ composer dump-autoload
 **And you are ready to go.**
 
 ## Usage
+
+### Shop
+Shop methods to consider:
+
+Format prices or other values to the price format specified in config:
+```php
+$formatted = Shop::format(9.99);
+// i.e. this will return $9.99 or the format set in the config file.
+```
 
 ### Cart
 Carts are created per user in the database, this means that a user can have his cart saved when logged out and when he switches to a different device.
