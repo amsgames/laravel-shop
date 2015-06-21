@@ -203,8 +203,6 @@ Define migration to look like the following example:
 ```php
 <?php
 
-use Amsgames\LaravelShop\Traits\ShopItemTrait;
-
 class AlterMyTable extends Migration {
 
 	public function up()
@@ -353,10 +351,10 @@ $cart->add(MyCustomProduct::find(1), 2);
 
 print_r( [ count( $cart->items ), $cart->items[0]->quantity ] );  // Will print 1 as items count and 6 as quantity.
 
-// Adds 2 MyCustomProduct of id 99.
-$cart->add(MyCustomProduct::find(99), 2);
+// Adds 2 MyCustomProduct of sku 99.
+$cart->add(MyCustomProduct::findBySKU(99), 2);
 
-echo count( $cart->items ) ;  // Will print 2 since we added a new item with id 99 to the cart.
+echo count( $cart->items ) ;  // Will print 2 since we added a new item with sku 99 to the cart.
 ```
 
 We can reset the quantity of an item to a given value:
@@ -402,6 +400,13 @@ Arrays can be used to remove unexistent model items:
 ```php
 // Removes unexistent item model PROD0001
 $cart->remove(['sku' => 'PROD0001']);
+```
+
+#### Methods
+
+```php
+// Checks if cart has item with SKU "PROD0001"
+$success = $cart->hasItem('PROD0001');
 ```
 
 #### Displaying
@@ -453,6 +458,17 @@ $item->object->types;
 
 // Assuming MyCustomProduct has myAttribute attribute.
 $item->object->myAttribute;
+```
+
+The following shop methods apply to model `Item` or exiting models that uses `ShopItemTrait`:
+
+```php
+$item = Item::findBySKU('PROD0001');
+
+$item = MyCustomProduct::findBySKU('PROD0002');
+
+// Quering
+$item = Item::whereSKU('PROD0001')->where('price', '>', 0)->get();
 ```
 
 ## License

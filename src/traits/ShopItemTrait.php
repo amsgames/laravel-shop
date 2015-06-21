@@ -112,5 +112,31 @@ trait ShopItemTrait
         );
     }
 
+    /**
+     * Scope class by a given sku.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query  Query.
+     * @param mixed                                 $sku    SKU.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWhereSKU($query, $sku)
+    {
+        return $query->where('sku', $sku);
+    }
+
+    /**
+     * Scope class by a given sku.
+     * Returns item found.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query  Query.
+     * @param mixed                                 $sku    SKU.
+     *
+     * @return this
+     */
+    public function scopeFindBySKU($query, $sku)
+    {
+        return $query->whereSKU($sku)->first();
+    }
 
 }
