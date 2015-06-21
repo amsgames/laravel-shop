@@ -12,6 +12,7 @@ namespace Amsgames\LaravelShop\Traits;
  * @package Amsgames\LaravelShop
  */
 
+use Amsgames\LaravelShop\LaravelShopFacade;
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
 
@@ -97,19 +98,7 @@ trait ShopItemTrait
      */
     public function getDisplayPriceAttribute()
     {
-        return preg_replace(
-            [
-                '/:symbol/',
-                '/:price/',
-                '/:currency/'
-            ],
-            [
-                Config::get('shop.currency_symbol'),
-                $this->attributes['price'],
-                Config::get('shop.currency')
-            ],
-            Config::get('shop.display_price_format')
-        );
+        return Shop::format($this->attributes['price']);
     }
 
     /**

@@ -61,6 +61,12 @@ Then in your `config/app.php` add
     
 in the `providers` array.
 
+Then add
+
+    'Shop'      => 'Amsgames\LaravelShop\LaravelShopFacade',
+    
+in the `aliases` array.
+
 Note: This project is still in development stage, we recommend to use this package once a release version is in place.
 
 ## Configuration

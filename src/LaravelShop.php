@@ -11,6 +11,9 @@ namespace Amsgames\LaravelShop;
  * @license MIT
  * @package Amsgames\LaravelShop
  */
+
+use Illuminate\Support\Facades\Config;
+
 class LaravelShop
 {
     /**
