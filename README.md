@@ -668,23 +668,38 @@ Status codes out of the box:
 - `Shop::ORDER_PENDING` &mdash; i.e. Pending for payment.
 - `Shop::ORDER_IN_PROCESS` &mdash; i.e. In process of shipping. In process of revision.
 - `Shop::ORDER_COMPLETED` &mdash; i.e. When payment has been made and items were delivered to client.
-- `Shop::ORDER_IN_PROCESS` &mdash; i.e. In process of shipping. In process of revision.
 - `Shop::ORDER_FAILED` &mdash; i.e. When payment failed.
 - `Shop::ORDER_CANCELED` &mdash; i.e. When an order has been canceled by the user.
 
 You can use your own custom status codes. Simply add them manually to the `order_status` database table or create a custom seeder like this:
 
 ```php
-// Checks if order is in a specific status.
-$success = $order->is(Shop::ORDER_COMPLETED);
+class MyCustomStatusSeeder extends Seeder
+{
 
-// Quering
-// Get orders from specific user ID.
-$orders = Order::whereUser($userId)->get();
-// Get orders from specific user ID and status.
-$completed_orders = Order::whereUser($userId)
-		->whereStatus(Shop::ORDER_COMPLETED)
-		->get();
+  public function run()
+  {
+
+    DB::table('order_status')->insert([
+		    [
+		    		'code' 				=> 'my_status',
+		    		'name' 				=> 'My Status',
+		    		'description' => 'Custom status used in my shop.',
+		    ],
+		]);
+
+  }
+}
+```
+
+Then use it like:
+
+```php
+$myStatusCode = 'my_status';
+
+if ($order->is($myStatusCode)) {
+	echo 'My custom status work!';
+}
 ```
 
 ## License
