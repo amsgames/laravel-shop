@@ -129,7 +129,7 @@ The `Item` model has the following main attributes:
 - `price` &mdash; Item price.
 - `tax` &mdash; Item tax. Defaulted to 0.
 - `shipping` &mdash; Item shipping. Defaulted to 0.
-- `currecy` &mdash; Current version of package will use USD as default.
+- `currency` &mdash; Current version of package will use USD as default.
 - `quantity` &mdash; Item quantity.
 - `class` &mdash; Class reference of the model being used as shoppable item. Optional when using array data.
 - `reference_id` &mdash; Id reference of the model being used as shoppable item. Optional when using array data.
@@ -137,6 +137,8 @@ The `Item` model has the following main attributes:
 - `displayPrice` &mdash; Price value formatted for shop display. i.e. "$9.99" instead of just "9.99".
 - `displayTax` &mdash; Tax value formatted for shop display. i.e. "$9.99" instead of just "9.99".
 - `displayShipping` &mdash; Tax value formatted for shop display. i.e. "$9.99" instead of just "9.99".
+- `displayName` &mdash; Based on the model's item name property.
+- `shopUrl` &mdash; Based on the model's item route property.
 - `created_at` &mdash; When the item record was created in the database.
 - `updated_at` &mdash; Last time when the item was updated.
 
@@ -216,7 +218,7 @@ class MyCustomProduct extends Model {
 }
 ```
 
-Add `sku` (string) and `price` (decimal, 20, 2) fields to your model's table. You can also include `name` (string) and `tax` (decimal, 20, 2), although these are optional. You can do this by creating a new migration:
+Add `sku` (string) and `price` (decimal, 20, 2) fields to your model's table. You can also include `name` (string), `tax` (decimal, 20, 2) and `shipping` (decimal, 20, 2), although these are optional. You can do this by creating a new migration:
 
 ```bash
 php artisan make:migration alter_my_table
@@ -446,26 +448,59 @@ $success = $cart->hasItem('PROD0001');
 
 Hew is an example of how to display the cart in a blade template:
 
+Items count in cart:
+
+```html
+<span>Items in cart: {{ $cart->count }}</span>
+```
+
+Items in cart:
+
 ```html
 <table>
 	@foreach ($cart->items as $item) {
 		<tr>
 			<td>{{ $item->sku }}</td>
-			<td>{{ $item->displayName }}</td>
+			<td><a href="{{ $item->shopUrl }}">{{ $item->displayName }}</a></td>
 			<td>{{ $item->price }}</td>
 			<td>{{ $item->displayPrice }}</td>
 			<td>{{ $item->tax }}</td>
 			<td>{{ $item->quantity }}</td>
-			<td>{{ $item->shopUrl }}</td>
+			<td>{{ $item->shipping }}</td>
 		</tr>
 	@endforeach
 </table>
 ```
 
-Attributes to consider:
-- `displayPrice` &mdash; Price formatted according to the package's config file.
-- `displayName` &mdash; Based on the model's item name property. Empty string for array items.
-- `shopUrl` &mdash; Based on the model's item route property. '#' string for array items.
+Cart amount calculations:
+
+```html
+<table>
+
+	<tbody>
+		<tr>
+			<td>Subtotal:</td>
+			<td>{{ $cart->displayTotalPrice }}</td>
+		</tr>
+		<tr>
+			<td>Shipping:</td>
+			<td>{{ $cart->displayTotalShipping }}</td>
+		</tr>
+		<tr>
+			<td>Tax:</td>
+			<td>{{ $cart->displayTotalTax }}</td>
+		</tr>
+	</tbody>
+
+	<tfoot>
+		<tr>
+			<th>Total:</th>
+			<th>{{ $cart->displayTotal }}</th>
+		</tr>
+	</tfoot>
+
+</table>
+```
 
 ### Item
 
