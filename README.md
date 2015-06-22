@@ -128,11 +128,17 @@ The `Item` model has the following main attributes:
 - `sku` &mdash; Stock Keeping Unit, aka your unique product identification within your store.
 - `price` &mdash; Item price.
 - `tax` &mdash; Item tax. Defaulted to 0.
+- `shipping` &mdash; Item shipping. Defaulted to 0.
 - `currecy` &mdash; Current version of package will use USD as default.
 - `quantity` &mdash; Item quantity.
 - `class` &mdash; Class reference of the model being used as shoppable item. Optional when using array data.
 - `reference_id` &mdash; Id reference of the model being used as shoppable item. Optional when using array data.
 - `user_id` &mdash; Owner.
+- `displayPrice` &mdash; Price value formatted for shop display. i.e. "$9.99" instead of just "9.99".
+- `displayTax` &mdash; Tax value formatted for shop display. i.e. "$9.99" instead of just "9.99".
+- `displayShipping` &mdash; Tax value formatted for shop display. i.e. "$9.99" instead of just "9.99".
+- `created_at` &mdash; When the item record was created in the database.
+- `updated_at` &mdash; Last time when the item was updated.
 
 Business definition: Item used as a **cart item** or an **order item**.
 
@@ -160,6 +166,17 @@ class Cart extends ShopCartModel
 
 The `Item` model has the following main attributes:
 - `user_id` &mdash; Owner.
+- `count` &mdash; Total amount of items in cart.
+- `totalPrice` &mdash; Total price from all items in cart.
+- `totalTax` &mdash; Total tax from all items in cart, plus global tax set in config.
+- `totalShipping` &mdash; Total shipping from all items in cart.
+- `total` &mdash; Total amount to be charged, sums total price, total tax and total shipping.
+- `displayTotalPrice` &mdash; Total price value formatted for shop display. i.e. "$9.99" instead of just "9.99".
+- `displayTotalTax` &mdash; Total tax value formatted for shop display. i.e. "$9.99" instead of just "9.99".
+- `displayTotalShipping` &mdash; Total shipping value formatted for shop display. i.e. "$9.99" instead of just "9.99".
+- `displayTotal` &mdash; Total amount value formatted for shop display. i.e. "$9.99" instead of just "9.99".
+- `created_at` &mdash; When the cart record was created in the database.
+- `updated_at` &mdash; Last time when the cart was updated.
 
 #### User
 

@@ -57,4 +57,25 @@ interface ShopItemInterface
      */
     public function getShopIdAttribute();
 
+    /**
+     * Returns formatted price for display.
+     *
+     * @return string
+     */
+    public function getDisplayPriceAttribute();
+
+    /**
+     * Returns formatted tax for display.
+     *
+     * @return string
+     */
+    public function getDisplayTaxAttribute();
+
+    /**
+     * Returns formatted tax for display.
+     *
+     * @return string
+     */
+    public function getDisplayShippingAttribute();
+
 }

@@ -67,4 +67,82 @@ interface ShopCartInterface
      */
     public function scopeCurrent($query);
 
+    /**
+     * Returns total amount of items in cart.
+     *
+     * @return int
+     */
+    public function getCountAttribute();
+
+    /**
+     * Returns total price of all the items in cart.
+     *
+     * @return float
+     */
+    public function getTotalPriceAttribute();
+
+    /**
+     * Returns total tax of all the items in cart.
+     *
+     * @return float
+     */
+    public function getTotalTaxAttribute();
+
+    /**
+     * Returns total tax of all the items in cart.
+     *
+     * @return float
+     */
+    public function getTotalShippingAttribute();
+
+    /**
+     * Returns total discount amount based on all coupons applied.
+     *
+     * @return float
+     */
+    public function getTotalDiscountAttribute();
+
+    /**
+     * Returns total amount to be charged base on total price, tax and discount.
+     *
+     * @return float
+     */
+    public function getTotalAttribute();
+
+    /**
+     * Returns formatted total price of all the items in cart.
+     *
+     * @return string
+     */
+    public function getDisplayTotalPriceAttribute();
+
+    /**
+     * Returns formatted total tax of all the items in cart.
+     *
+     * @return string
+     */
+    public function getDisplayTotalTaxAttribute();
+
+    /**
+     * Returns formatted total tax of all the items in cart.
+     *
+     * @return string
+     */
+    public function getDisplayTotalShippingAttribute();
+
+    /**
+     * Returns formatted total discount amount based on all coupons applied.
+     *
+     * @return string
+     */
+    public function getDisplayTotalDiscountAttribute();
+
+    /**
+     * Returns formatted total amount to be charged base on total price, tax and discount.
+     *
+     * @return string
+     */
+    public function getDisplayTotalAttribute();
+
+
 }

@@ -76,6 +76,27 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Coupon Model
+    |--------------------------------------------------------------------------
+    |
+    | This is the Coupon model used by LaravelShop to create correct relations.
+    | Update the model if it is in a different namespace.
+    |
+    */
+    'coupon' => 'App\Coupon',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Coupon Database Table
+    |--------------------------------------------------------------------------
+    |
+    | This is the table used by LaravelShop to save order data to the database.
+    |
+    */
+    'coupon_table' => 'coupon',
+
+    /*
+    |--------------------------------------------------------------------------
     | Shop currency code
     |--------------------------------------------------------------------------
     |
@@ -96,6 +117,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Shop tax
+    |--------------------------------------------------------------------------
+    |
+    | Tax percentage to apply to all items. Value must be in decimal.
+    |
+    | Tax to apply:            8%
+    | Tax config value:        0.08
+    |
+    */
+    'tax' => 0.0,
+
+    /*
+    |--------------------------------------------------------------------------
     | Format with which to display prices across the store.
     |--------------------------------------------------------------------------
     |
@@ -108,5 +142,38 @@ return [
     |
     */
     'display_price_format' => ':symbol:price',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Allow multiple coupons
+    |--------------------------------------------------------------------------
+    |
+    | Flag that indicates if user can apply more that one coupon to cart or orders.
+    |
+    */
+    'allow_multiple_coupons' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cache cart calculations
+    |--------------------------------------------------------------------------
+    |
+    | Caches cart calculations, such as item count, cart total amount and similar.
+    | Cache is forgotten when adding or removing items.
+    | If not cached, calculations will be done every time their attributes are called.
+    | This configuration option exists if you don't wish to overload you cache.
+    |
+    */
+    'cache_in_cart_calculations' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cache cart calculations minutes
+    |--------------------------------------------------------------------------
+    |
+    | Amount of minutes to cache cart calculations.
+    |
+    */
+    'cache_cart_calculations_minutes' => 15,
 
 ];

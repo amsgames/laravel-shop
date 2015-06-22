@@ -33,6 +33,7 @@ class ShopSetupTables extends Migration
             $table->string('sku');
             $table->decimal('price', 20, 2);
             $table->decimal('tax', 20, 2)->default(0);
+            $table->decimal('shipping', 20, 2)->default(0);
             $table->string('currency')->nullable();
             $table->integer('quantity')->unsigned();
             $table->string('class')->nullable();
@@ -55,6 +56,23 @@ class ShopSetupTables extends Migration
             $table->index(['user_id', 'sku', 'order_id']);
             $table->index(['reference_id']);
         });
+        // Create table for storing coupons
+        Schema::create('{{ $couponTable }}', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('code')->unique();
+            $table->string('name');
+            $table->string('description', 1024)->nullable();
+            $table->string('sku');
+            $table->decimal('value', 20, 2)->nullable();
+            $table->decimal('discount', 3, 2)->nullable();
+            $table->integer('active')->default(1);
+            $table->dateTime('expires_at')->nullable();
+            $table->timestamps();
+            $table->index(['code', 'expires_at']);
+            $table->index(['code', 'active']);
+            $table->index(['code', 'active', 'expires_at']);
+            $table->index(['sku']);
+        });
     }
 
     /**
@@ -64,6 +82,7 @@ class ShopSetupTables extends Migration
      */
     public function down()
     {
+        Schema::drop('{{ $couponTable }}');
         Schema::drop('{{ $itemTable }}');
         Schema::drop('{{ $cartTable }}');
     }

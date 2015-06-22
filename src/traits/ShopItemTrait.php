@@ -128,4 +128,24 @@ trait ShopItemTrait
         return $query->whereSKU($sku)->first();
     }
 
+    /**
+     * Returns formatted tax for display.
+     *
+     * @return string
+     */
+    public function getDisplayTaxAttribute()
+    {
+        return Shop::format(array_key_exists('tax', $this->attributes) ? $this->attributes['tax'] : 0);
+    }
+
+    /**
+     * Returns formatted tax for display.
+     *
+     * @return string
+     */
+    public function getDisplayShippingAttribute()
+    {
+        return Shop::format(array_key_exists('shipping', $this->attributes) ? $this->attributes['shipping'] : 0);
+    }
+
 }

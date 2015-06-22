@@ -12,12 +12,20 @@ namespace Amsgames\LaravelShop\Traits;
  * @package Amsgames\LaravelShop
  */
 
+use Shop;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use InvalidArgumentException;
 
 trait ShopCartTrait
 {
+    /**
+     * Property used to stored calculations.
+     * @var array
+     */
+    private $cartCalculations = null;
 
     /**
      * Boot the user model
@@ -91,6 +99,15 @@ trait ShopCartTrait
                                         ?   $item->tax
                                         :   0
                                     ),
+                'shipping'      => is_array($item) 
+                                    ? (array_key_exists('shipping', $item)
+                                        ?   $item['shipping']
+                                        :   0
+                                    ) 
+                                    : (isset($item->shipping) && !empty($item->shipping)
+                                        ?   $item->shipping
+                                        :   0
+                                    ),
                 'currency'      => Config::get('shop.currency'),
                 'quantity'      => $quantity,
                 'class'         => is_array($item) ? null : $reflection->getName(),
@@ -103,6 +120,7 @@ trait ShopCartTrait
                 : $cartItem->quantity + $quantity;
             $cartItem->save();
         }
+        $this->resetCalculations();
         return $this;
     }
 
@@ -130,6 +148,7 @@ trait ShopCartTrait
             }
             $cartItem->delete();
         }
+        $this->resetCalculations();
         return $this;
     }
 
@@ -230,6 +249,156 @@ trait ShopCartTrait
             ]);
         }
         return $cart;
+    }
+
+    /**
+     * Returns total amount of items in cart.
+     *
+     * @return int
+     */
+    public function getCountAttribute()
+    {
+        if (empty($this->cartCalculations)) $this->runCalculations();
+        return $this->cartCalculations->itemCount;
+    }
+
+    /**
+     * Returns total price of all the items in cart.
+     *
+     * @return float
+     */
+    public function getTotalPriceAttribute()
+    {
+        if (empty($this->cartCalculations)) $this->runCalculations();
+        return $this->cartCalculations->totalPrice;
+    }
+
+    /**
+     * Returns total tax of all the items in cart.
+     *
+     * @return float
+     */
+    public function getTotalTaxAttribute()
+    {
+        if (empty($this->cartCalculations)) $this->runCalculations();
+        return $this->cartCalculations->totalTax + round($this->totalPrice * Config::get('shop.tax'), 2);
+    }
+
+    /**
+     * Returns total tax of all the items in cart.
+     *
+     * @return float
+     */
+    public function getTotalShippingAttribute()
+    {
+        if (empty($this->cartCalculations)) $this->runCalculations();
+        return $this->cartCalculations->totalShipping;
+    }
+
+    /**
+     * Returns total discount amount based on all coupons applied.
+     *
+     * @return float
+     */
+    public function getTotalDiscountAttribute() { /* TODO */ }
+
+    /**
+     * Returns total amount to be charged base on total price, tax and discount.
+     *
+     * @return float
+     */
+    public function getTotalAttribute()
+    {
+        if (empty($this->cartCalculations)) $this->runCalculations();
+        return $this->totalPrice + $this->totalTax + $this->totalShipping;
+    }
+
+    /**
+     * Returns formatted total price of all the items in cart.
+     *
+     * @return string
+     */
+    public function getDisplayTotalPriceAttribute()
+    {
+        return Shop::format($this->totalPrice);
+    }
+
+    /**
+     * Returns formatted total tax of all the items in cart.
+     *
+     * @return string
+     */
+    public function getDisplayTotalTaxAttribute()
+    {
+        return Shop::format($this->totalTax);
+    }
+
+    /**
+     * Returns formatted total tax of all the items in cart.
+     *
+     * @return string
+     */
+    public function getDisplayTotalShippingAttribute()
+    {
+        return Shop::format($this->totalShipping);
+    }
+
+    /**
+     * Returns formatted total discount amount based on all coupons applied.
+     *
+     * @return string
+     */
+    public function getDisplayTotalDiscountAttribute() { /* TODO */ }
+
+    /**
+     * Returns formatted total amount to be charged base on total price, tax and discount.
+     *
+     * @return string
+     */
+    public function getDisplayTotalAttribute()
+    {
+        return Shop::format($this->total);
+    }
+
+    private function runCalculations()
+    {
+        if (!empty($this->cartCalculations)) return $this->cartCalculations;
+        $cacheKey = 'shop_cart_' . $this->attributes['id'] . '_calculations';
+        if (Config::get('shop.cache_in_cart_calculations')
+            && Cache::has($cacheKey)
+        ) {
+            $this->cartCalculations = Cache::get($cacheKey);
+            return $this->cartCalculations;
+        }
+        $this->cartCalculations = DB::table(Config::get('shop.cart_table'))
+            ->select([
+                DB::raw('sum(item.quantity) as itemCount'),
+                DB::raw('sum(item.price * item.quantity) as totalPrice'),
+                DB::raw('sum(item.tax * item.quantity) as totalTax'),
+                DB::raw('sum(item.shipping * item.quantity) as totalShipping')
+            ])
+            ->join(Config::get('shop.item_table'), 'item.cart_id', '=', 'cart.id')
+            ->where('cart.id', $this->attributes['id'])
+            ->first();
+        if (Config::get('shop.cache_in_cart_calculations')) {
+            Cache::put(
+                $cacheKey,
+                $this->cartCalculations,
+                Config::get('shop.cache_cart_calculations_minutes')
+            );
+        }
+        return $this->cartCalculations;
+    }
+
+    /**
+     * Resets cart calculations.
+     */
+    private function resetCalculations ()
+    {
+        $this->cartCalculations = null;
+        if (Config::get('shop.cache_in_cart_calculations')) {
+            Cache::forget('shop_cart_' . $this->attributes['id'] . '_calculations');
+        }
     }
 
 }

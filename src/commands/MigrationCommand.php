@@ -42,11 +42,12 @@ class MigrationCommand extends Command
 
         $cartTable          = Config::get('shop.cart_table');
         $itemTable          = Config::get('shop.item_table');
+        $couponTable        = Config::get('shop.coupon_table');
 
         $this->line('');
         $this->info( "Tables: $cartTable, $itemTable" );
 
-        $message = "A migration that creates '$cartTable', '$itemTable'".
+        $message = "A migration that creates '$cartTable', '$itemTable', '$couponTable'".
         " tables will be created in database/migrations directory";
 
         $this->comment($message);
@@ -57,7 +58,7 @@ class MigrationCommand extends Command
             $this->line('');
 
             $this->info("Creating migration...");
-            if ($this->createMigration($cartTable, $itemTable)) {
+            if ($this->createMigration($cartTable, $itemTable, $couponTable)) {
 
                 $this->info("Migration successfully created!");
             } else {
@@ -79,7 +80,7 @@ class MigrationCommand extends Command
      *
      * @return bool
      */
-    protected function createMigration($cartTable, $itemTable)
+    protected function createMigration($cartTable, $itemTable, $couponTable)
     {
         $migrationFile = base_path("/database/migrations")."/".date('Y_m_d_His')."_shop_setup_tables.php";
 
@@ -87,7 +88,7 @@ class MigrationCommand extends Command
         $userModel   = Config::get('auth.model');
         $userKeyName = (new $userModel())->getKeyName();
 
-        $data = compact('cartTable', 'itemTable', 'usersTable', 'userKeyName');
+        $data = compact('cartTable', 'itemTable', 'usersTable', 'couponTable', 'userKeyName');
 
         $output = $this->laravel->view->make('laravel-shop::generators.migration')->with($data)->render();
 
