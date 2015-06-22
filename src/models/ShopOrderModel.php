@@ -12,16 +12,15 @@ namespace Amsgames\LaravelShop\Models;
  * @package Amsgames\LaravelShop
  */
 
-use Amsgames\LaravelShop\Contracts\ShopCartInterface;
-use Amsgames\LaravelShop\Traits\ShopCartTrait;
-use Amsgames\LaravelShop\Traits\ShopCartTrait;
+use Amsgames\LaravelShop\Contracts\ShopOrderInterface;
+use Amsgames\LaravelShop\Traits\ShopOrderTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
-class ShopCartModel extends Model implements ShopCartInterface
+class ShopOrderModel extends Model implements ShopOrderInterface
 {
 
-    use ShopCartTrait, ShopCalculationsTrait;
+    use ShopOrderTrait, ShopCalculationsTrait;
 
     /**
      * The database table used by the model.
@@ -35,7 +34,7 @@ class ShopCartModel extends Model implements ShopCartInterface
      *
      * @var array
      */
-    protected $fillable = ['user_id'];
+    protected $fillable = ['user_id', 'status'];
 
     /**
      * Creates a new instance of the model.
@@ -45,7 +44,7 @@ class ShopCartModel extends Model implements ShopCartInterface
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->table = Config::get('shop.cart_table');
+        $this->table = Config::get('shop.order_table');
     }
 
 }

@@ -19,13 +19,33 @@ trait ShopUserTrait
 {
 
     /**
-     * One-to-Many relations with Item.
+     * One-to-Many relations with cart.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function cart()
     {
         return $this->hasOne(Config::get('shop.cart'), 'user_id');
+    }
+
+    /**
+     * One-to-Many relations with Item.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function items()
+    {
+        return $this->hasMany(Config::get('shop.item'), 'user_id');
+    }
+
+    /**
+     * One-to-Many relations with Order.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function orders()
+    {
+        return $this->hasMany(Config::get('shop.order'), 'user_id');
     }
 
     /**

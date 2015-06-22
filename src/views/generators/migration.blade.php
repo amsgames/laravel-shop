@@ -73,6 +73,33 @@ class ShopSetupTables extends Migration
             $table->index(['code', 'active', 'expires_at']);
             $table->index(['sku']);
         });
+        // Create table for storing coupons
+        Schema::create('{{ $orderStatusTable }}', function (Blueprint $table) {
+            $table->string('code');
+            $table->string('name');
+            $table->string('description')->nullable();
+            $table->timestamps();
+            $table->primaryKey('code');
+        });
+        // Create table for storing carts
+        Schema::create('{{ $orderTable }}', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->integer('user_id')->unsigned();
+            $table->string('statusCode');
+            $table->timestamps();
+            $table->foreign('user_id')
+                ->references('{{ $userKeyName }}')
+                ->on('{{ $usersTable }}')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreign('status')
+                ->references('{{ $orderStatusTable }}')
+                ->on('code')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->index(['user_id', 'code']);
+            $table->index(['id', 'user_id', 'code']);
+        });
     }
 
     /**
@@ -82,6 +109,8 @@ class ShopSetupTables extends Migration
      */
     public function down()
     {
+        Schema::drop('{{ $orderTable }}');
+        Schema::drop('{{ $orderStatusTable }}');
         Schema::drop('{{ $couponTable }}');
         Schema::drop('{{ $itemTable }}');
         Schema::drop('{{ $cartTable }}');

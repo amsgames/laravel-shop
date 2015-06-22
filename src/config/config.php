@@ -55,6 +55,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Order Status Database Table
+    |--------------------------------------------------------------------------
+    |
+    | This is the table used by LaravelShop to save order status data to the database.
+    |
+    */
+    'order_status_table' => 'order_status',
+
+    /*
+    |--------------------------------------------------------------------------
     | Item Model
     |--------------------------------------------------------------------------
     |
@@ -155,25 +165,45 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Cache cart calculations
+    | Cache shop calculations
     |--------------------------------------------------------------------------
     |
-    | Caches cart calculations, such as item count, cart total amount and similar.
+    | Caches shop calculations, such as item count, cart total amount and similar.
     | Cache is forgotten when adding or removing items.
     | If not cached, calculations will be done every time their attributes are called.
-    | This configuration option exists if you don't wish to overload you cache.
+    | This configuration option exists if you don't wish to overload your cache.
     |
     */
-    'cache_in_cart_calculations' => true,
+    'cache_calculations' => true,
 
     /*
     |--------------------------------------------------------------------------
-    | Cache cart calculations minutes
+    | Cache calculations minutes
     |--------------------------------------------------------------------------
     |
-    | Amount of minutes to cache cart calculations.
+    | Amount of minutes to cache calculations.
     |
     */
-    'cache_cart_calculations_minutes' => 15,
+    'cache_calculations_minutes' => 15,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Order status lock
+    |--------------------------------------------------------------------------
+    |
+    | Order status where the order will remain locked from modifications.
+    |
+    */
+    'order_status_lock' => [],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Order status placement
+    |--------------------------------------------------------------------------
+    |
+    | Status to set when the order is placed and created by the cart.
+    |
+    */
+    'order_status_placement' => 'pending',
 
 ];

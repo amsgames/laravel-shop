@@ -30,6 +30,13 @@ interface ShopItemInterface
     public function cart();
 
     /**
+     * One-to-One relations with Order.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function order();
+
+    /**
      * Returns flag indicating if item has an object.
      *
      * @return bool

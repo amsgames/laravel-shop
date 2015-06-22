@@ -11,20 +11,22 @@ Laravel shop adds shopping cart, orders and payments to your new or existing pro
 - [Configuration](#configuration)
     - [Database Setup](#database-setup)
     - [Models Setup](#models)
-        - [Shop](#shop)
         - [Item](#item)
         - [Cart](#cart)
+        - [Order](#order)
         - [User](#user)
         - [Existing Model Conversion](#existing-model-conversion)
-        		- [Item Name](#item-name)
-        		- [Item Url](#item-url)
         - [Dump Autoload](#dump-autoload)
 - [Usage](#usage)
+    - [Shop](#shop)
     - [Cart](#cart)
         - [Adding Items](#adding-items)
         - [Removing Items](#removing-items)
+        - [Placing Order](#placing-order)
+        - [Cart Methods](#cart-methods)
         - [Displaying](#removing-items)
     - [Item](#cart)
+    - [Order](#cart)
 - [License](#license)
 - [Additional Information](#additional-information)
 
@@ -39,11 +41,12 @@ Under development:
 
 - Order
 - Payment gateways
-- Coupons
 - Transactions
 
 On the horizon:
 
+- Shipping orders
+- Coupons
 - Product and variations solution
 - Backend dashboard
 - Frontend templates
@@ -92,10 +95,36 @@ php artisan laravel-shop:migration
 
 The command below will generate a new migration file with database commands to create the cart and item tables. The file will be located in `database/migrations`. Add additional fields if needed to fill your software needs.
 
+The command will also create a database seeder to fill shop catalog of status and types.
+
 Create schema in database: 
 
 ```bash
 php artisan migrate
+```
+
+Add the seeder to `database/seeds/DatabaseSeeder.php`:
+
+```bash
+class DatabaseSeeder extends Seeder
+{
+
+  public function run()
+  {
+    Model::unguard();
+
+    $this->call('LaravelShopSeeder');
+
+    Model::reguard();
+  }
+
+}
+```
+
+Run seeder: 
+
+```bash
+php artisan db:seed
 ```
 
 ### Models
@@ -125,6 +154,7 @@ class Item extends ShopItemModel
 ```
 
 The `Item` model has the following main attributes:
+- `id` &mdash; Item id.
 - `sku` &mdash; Stock Keeping Unit, aka your unique product identification within your store.
 - `price` &mdash; Item price.
 - `tax` &mdash; Item tax. Defaulted to 0.
@@ -167,7 +197,9 @@ class Cart extends ShopCartModel
 ```
 
 The `Item` model has the following main attributes:
+- `id` &mdash; Cart id.
 - `user_id` &mdash; Owner.
+- `items` &mdash; Items in cart.
 - `count` &mdash; Total amount of items in cart.
 - `totalPrice` &mdash; Total price from all items in cart.
 - `totalTax` &mdash; Total tax from all items in cart, plus global tax set in config.
@@ -179,6 +211,45 @@ The `Item` model has the following main attributes:
 - `displayTotal` &mdash; Total amount value formatted for shop display. i.e. "$9.99" instead of just "9.99".
 - `created_at` &mdash; When the cart record was created in the database.
 - `updated_at` &mdash; Last time when the cart was updated.
+
+#### Order
+
+Create a Order model:
+
+```bash
+php artisan make:model Order
+```
+
+This will create the model file `app/Order.php`, edit it and make it look like (take in consideration your app's namespace):
+
+```php
+<?php
+
+namespace App;
+
+use Amsgames\LaravelShop\Models\ShopOrderModel;
+
+class Order extends ShopOrderModel 
+{
+}
+```
+
+The `Order` model has the following main attributes:
+- `id` &mdash; Order id or order number.
+- `user_id` &mdash; Owner.
+- `items` &mdash; Items in order.
+- `statusCode` &mdash; Status code.
+- `count` &mdash; Total amount of items in order.
+- `totalPrice` &mdash; Total price from all items in order.
+- `totalTax` &mdash; Total tax from all items in order, plus global tax set in config.
+- `totalShipping` &mdash; Total shipping from all items in order.
+- `total` &mdash; Total amount to be charged, sums total price, total tax and total shipping.
+- `displayTotalPrice` &mdash; Total price value formatted for shop display. i.e. "$9.99" instead of just "9.99".
+- `displayTotalTax` &mdash; Total tax value formatted for shop display. i.e. "$9.99" instead of just "9.99".
+- `displayTotalShipping` &mdash; Total shipping value formatted for shop display. i.e. "$9.99" instead of just "9.99".
+- `displayTotal` &mdash; Total amount value formatted for shop display. i.e. "$9.99" instead of just "9.99".
+- `created_at` &mdash; When the order record was created in the database.
+- `updated_at` &mdash; Last time when the order was updated.
 
 #### User
 
@@ -196,7 +267,10 @@ class User extends Model {
 }
 ```
 
-This will enable the relation with `Cart` and shop needed methods.
+This will enable the relation with `Cart` and shop needed methods and attributes.
+- `cart` &mdash; User's cart.
+- `items` &mdash; Items (either order or cart).
+- `orders` &mdash; User's orders.
 
 #### Existing Model Conversion
 
@@ -341,7 +415,10 @@ Carts are created per user in the database, this means that a user can have his 
 Let's start by calling or creating the current user's cart:
 
 ```php
+// From cart
 $cart = Cart::current();
+// Once a cart has been created, it can be accessed from user
+$user->cart;
 ```
 
 Note: Laravel Shop doen not support guest at the moment.
@@ -437,11 +514,25 @@ Arrays can be used to remove unexistent model items:
 $cart->remove(['sku' => 'PROD0001']);
 ```
 
-#### Methods
+#### Cart Methods
 
 ```php
 // Checks if cart has item with SKU "PROD0001"
 $success = $cart->hasItem('PROD0001');
+```
+
+#### Placing Order
+
+Once cart is reviewed by user, the order can be place like this:
+
+```php
+// This will create the order and set it to the status in configuration
+$order = $cart->placeOrder();
+```
+
+Status can be forced in creation as well:
+```php
+$order = $cart->placeOrder(Shop::ORDER_COMPLETED);
 ```
 
 #### Displaying
@@ -537,6 +628,63 @@ $item = MyCustomProduct::findBySKU('PROD0002');
 
 // Quering
 $item = Item::whereSKU('PROD0001')->where('price', '>', 0)->get();
+```
+
+### Order
+Find a specific order number:
+
+```php
+$order = Order::find(1);
+```
+
+Find orders form user:
+
+```php
+// Get orders from specific user ID.
+$orders = Order::findByUser($userId);
+// Get orders from specific user ID and status.
+$canceled_orders = Order::findByUser($userId, Shop::ORDER_CANCELED);
+```
+
+#### Order Methods
+
+```php
+// Checks if order is in a specific status.
+$success = $order->is(Shop::ORDER_COMPLETED);
+
+// Quering
+// Get orders from specific user ID.
+$orders = Order::whereUser($userId)->get();
+// Get orders from specific user ID and status.
+$completed_orders = Order::whereUser($userId)
+		->whereStatus(Shop::ORDER_COMPLETED)
+		->get();
+```
+
+#### Order Status Codes
+
+Status codes out of the box:
+- `Shop::ORDER_IN_CREATION` &mdash; Order status in creation.
+- `Shop::ORDER_PENDING` &mdash; i.e. Pending for payment.
+- `Shop::ORDER_IN_PROCESS` &mdash; i.e. In process of shipping. In process of revision.
+- `Shop::ORDER_COMPLETED` &mdash; i.e. When payment has been made and items were delivered to client.
+- `Shop::ORDER_IN_PROCESS` &mdash; i.e. In process of shipping. In process of revision.
+- `Shop::ORDER_FAILED` &mdash; i.e. When payment failed.
+- `Shop::ORDER_CANCELED` &mdash; i.e. When an order has been canceled by the user.
+
+You can use your own custom status codes. Simply add them manually to the `order_status` database table or create a custom seeder like this:
+
+```php
+// Checks if order is in a specific status.
+$success = $order->is(Shop::ORDER_COMPLETED);
+
+// Quering
+// Get orders from specific user ID.
+$orders = Order::whereUser($userId)->get();
+// Get orders from specific user ID and status.
+$completed_orders = Order::whereUser($userId)
+		->whereStatus(Shop::ORDER_COMPLETED)
+		->get();
 ```
 
 ## License

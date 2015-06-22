@@ -16,6 +16,48 @@ use Illuminate\Support\Facades\Config;
 
 class LaravelShop
 {
+
+    /**
+     * Order status in creation.
+     * @var string
+     */
+    const ORDER_IN_CREATION         = 'in_creation';
+
+    /**
+     * Order status pending.
+     * i.e. Pending for payment.
+     * @var string
+     */
+    const ORDER_PENDING             = 'pending';
+
+    /**
+     * Order status in process.
+     * i.e. In process of shipping. In process of revision.
+     * @var string
+     */
+    const ORDER_IN_PROCESS          = 'in_process';
+
+    /**
+     * Order status completed.
+     * i.e. When payment has been made and items were delivered to client.
+     * @var string
+     */
+    const ORDER_COMPLETED           = 'completed';
+
+    /**
+     * Order status failed.
+     * i.e. When payment failed.
+     * @var string
+     */
+    const ORDER_FAILED              = 'failed';
+
+    /**
+     * Order status canceled.
+     * i.e. When an order has been canceled by the user.
+     * @var string
+     */
+    const ORDER_CANCELED            = 'canceled';
+
     /**
      * Laravel application
      *

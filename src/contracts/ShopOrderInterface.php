@@ -12,7 +12,7 @@ namespace Amsgames\LaravelShop\Contracts;
  * @package Amsgames\LaravelShop
  */
 
-interface ShopCartInterface
+interface ShopOrderInterface
 {
 
     /**
@@ -30,42 +30,24 @@ interface ShopCartInterface
     public function items();
 
     /**
-     * Adds item to cart.
-     *
-     * @param mixed $item     Item to add, can be an Store Item, a Model with ShopItemTrait or an array.
-     * @param int   $quantity Item quantity in cart.
-     */
-    public function add($item, $quantity = 1, $quantityReset = self::QUANTITY_ADDITION);
-
-    /**
-     * Removes an item from the cart or decreases its quantity.
-     * Returns flag indicating if removal was successful.
-     *
-     * @param mixed $item     Item to remove, can be an Store Item, a Model with ShopItemTrait or an array.
-     * @param int   $quantity Item quantity to decrease. 0 if wanted item to be removed completly.
+     * Returns flag indicating if order is lock and cant be modified by the user.
+     * An order is locked the moment it enters pending status.
      *
      * @return bool
      */
-    public function remove($item, $quantity = 0);
+    public function getIsLockedAttribute();
 
     /**
-     * Checks if the user has a role by its name.
+     * Scopes class by user ID and returns object.
+     * Optionally, scopes by status.
      *
-     * @param string|array $name       Role name or array of role names.
-     * @param bool         $requireAll All roles in the array are required.
-     *
-     * @return bool
-     */
-    public function hasItem($sku, $requireAll = false);
-
-    /**
-     * Scope to current user cart and returns class model.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query  Query.
+     * @param \Illuminate\Database\Eloquent\Builder $query      Query.
+     * @param mixed                                 $userId     User ID.
+     * @param string                                $statusCode Status.
      *
      * @return this
      */
-    public function scopeCurrent($query);
+    public function scopeFindByUser($query, $userId, $statusCode = null);
 
     /**
      * Returns total amount of items in cart.
@@ -145,14 +127,12 @@ interface ShopCartInterface
     public function getDisplayTotalAttribute();
 
     /**
-     * Transforms cart into an order.
-     * Returns created order.
+     * Returns flag indicating if order is in the status specified.
      *
-     * @param mixed $status Order status to create order with.
+     * @param string $status Status code.
      *
-     * @return Order
+     * @return bool
      */
-    public function placeOrder($status = null);
-
+    public function is($statusCode);
 
 }

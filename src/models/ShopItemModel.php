@@ -81,4 +81,14 @@ class ShopItemModel extends Model implements ShopItemInterface
         return $this->belongsTo(Config::get('shop.cart'), 'cart_id');
     }
 
+    /**
+     * One-to-One relations with the order model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function order()
+    {
+        return $this->belongsTo(Config::get('shop.order'), 'order_id');
+    }
+
 }

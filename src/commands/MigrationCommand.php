@@ -43,24 +43,34 @@ class MigrationCommand extends Command
         $cartTable          = Config::get('shop.cart_table');
         $itemTable          = Config::get('shop.item_table');
         $couponTable        = Config::get('shop.coupon_table');
+        $orderStatusTable   = Config::get('shop.order_status_table');
+        $orderTable         = Config::get('shop.order_table');
 
+        // Migrations
         $this->line('');
         $this->info( "Tables: $cartTable, $itemTable" );
 
-        $message = "A migration that creates '$cartTable', '$itemTable', '$couponTable'".
+        $message = "A migration that creates '$cartTable', '$itemTable', '$orderTable'".
         " tables will be created in database/migrations directory";
 
         $this->comment($message);
         $this->line('');
 
-        if ($this->confirm("Proceed with the migration creation? [Yes|no]", "Yes")) {
+        if ($this->confirm('Proceed with the migration creation? [Yes|no]', 'Yes')) {
 
             $this->line('');
 
-            $this->info("Creating migration...");
-            if ($this->createMigration($cartTable, $itemTable, $couponTable)) {
+            $this->info('Creating migration...');
+            if ($this->createMigration(compact(
+                    $cartTable,
+                    $itemTable,
+                    $couponTable,
+                    $orderStatusTable,
+                    $orderTable
+                ))
+            ) {
 
-                $this->info("Migration successfully created!");
+                $this->info('Migration successfully created!');
             } else {
                 $this->error(
                     "Couldn't create migration.\n Check the write permissions".
@@ -68,7 +78,37 @@ class MigrationCommand extends Command
                 );
             }
 
+        }
+
+        // Seeder
+
+        $this->line('');
+        $this->info( "Table seeders: $orderStatusTable" );
+        $message = "A seeder that seeds '$orderStatusTable' table(s) with data. Will be created in database/seeds directory";
+
+        $this->comment($message);
+        $this->line('');
+
+        if ($this->confirm('Proceed with the seeder creation? [Yes|no]', 'Yes')) {
+
             $this->line('');
+
+            $this->info('Creating seeder...');
+            if ($this->createSeeder(compact(
+                    $cartTable,
+                    $itemTable,
+                    $couponTable,
+                    $orderStatusTable,
+                    $orderTable
+                ))
+            ) {
+                $this->info('Seeder successfully created!');
+            } else {
+                $this->error(
+                    "Couldn't create seeder.\n Check the write permissions".
+                    " within the database/seeds directory."
+                );
+            }
 
         }
     }
@@ -76,23 +116,45 @@ class MigrationCommand extends Command
     /**
      * Create the migration.
      *
-     * @param string $name
+     * @param array $data Data with table names.
      *
      * @return bool
      */
-    protected function createMigration($cartTable, $itemTable, $couponTable)
+    protected function createMigration($data)
     {
-        $migrationFile = base_path("/database/migrations")."/".date('Y_m_d_His')."_shop_setup_tables.php";
+        $migrationFile = base_path('/database/migrations') . '/' . date('Y_m_d_His') . '_shop_setup_tables.php';
 
         $usersTable  = Config::get('auth.table');
         $userModel   = Config::get('auth.model');
         $userKeyName = (new $userModel())->getKeyName();
 
-        $data = compact('cartTable', 'itemTable', 'usersTable', 'couponTable', 'userKeyName');
+        $data = array_merge($data, compact('usersTable', 'userKeyName'));
 
         $output = $this->laravel->view->make('laravel-shop::generators.migration')->with($data)->render();
 
         if (!file_exists($migrationFile) && $fs = fopen($migrationFile, 'x')) {
+            fwrite($fs, $output);
+            fclose($fs);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Create the seeder.
+     *
+     * @param array $data Data with table names.
+     *
+     * @return bool
+     */
+    protected function createSeeder($data)
+    {
+        $seederFile = base_path('/database/seeds') . '/ShopSeeder.php';
+
+        $output = $this->laravel->view->make('laravel-shop::generators.seeder')->with($data)->render();
+
+        if (!file_exists($seederFile) && $fs = fopen($seederFile, 'x')) {
             fwrite($fs, $output);
             fclose($fs);
             return true;
