@@ -26,7 +26,7 @@ class CartTest extends TestCase
 
 		$this->user = factory('App\User')->create(['password' => Hash::make('laravel-shop')]);
 
-	    $bool = Auth::attempt(['email' => $this->user->email, 'password' => 'laravel-shop']);
+		$bool = Auth::attempt(['email' => $this->user->email, 'password' => 'laravel-shop']);
 	}
 
 	/**
