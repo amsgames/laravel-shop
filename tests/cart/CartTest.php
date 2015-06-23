@@ -65,9 +65,9 @@ class CartTest extends TestCase
 
 
 	/**
-	 * Tests cart item addition.
+	 * Tests cart item addition and removal.
 	 */
-	public function testAdditionByItemTrait()
+	public function testAddingRemovingItems()
 	{
 
 	    $products = [];
@@ -77,7 +77,7 @@ class CartTest extends TestCase
 		    	'price' 			=> count($products) + 0.99,
 		    	'sku'				=> str_random(15),
 		    	'name'				=> str_random(64),
-		    	'description'		=> str_random(1000),
+		    	'description'		=> str_random(500),
 		    ]);
 		}
 
@@ -107,6 +107,60 @@ class CartTest extends TestCase
 		foreach ($products as $product) {
 			$product->delete();
 		}
+	}
+
+	/**
+	 * Tests cart additional methods, such as item find and calculations.
+	 */
+	public function testCartMethods()
+	{
+
+	    $product = App\TestProduct::create([
+	    	'price' 			=> 1.29,
+	    	'sku'				=> str_random(15),
+	    	'name'				=> str_random(64),
+	    	'description'		=> str_random(500),
+	    ]);
+
+	    $cart = App\Cart::current()
+	    	->add($product)
+			->add(['sku' => 'TEST001', 'price' => 6.99]);
+
+	    $this->assertTrue($cart->hasItem('TEST001'));
+
+	    $this->assertFalse($cart->hasItem('XXX'));
+
+	    $this->assertEquals($cart->totalPrice, 8.28);
+
+	    $this->assertEquals($cart->totalTax, 0);
+
+	    $this->assertEquals($cart->totalShipping, 0);
+
+	    $this->assertEquals($cart->total, 8.28);
+
+		$product->delete();
+	}
+
+	/**
+	 * Tests cart order placement.
+	 */
+	public function testOrderPlacement()
+	{
+	    $cart = App\Cart::current()
+	    	->add(['sku' => str_random(15), 'price' => 1.99])
+			->add(['sku' => str_random(15), 'price' => 1.99]);
+		
+		$order = $cart->placeOrder();
+
+	    $this->assertNotEmpty($order);
+
+	    $this->assertEquals($order->totalPrice, 3.98);
+
+	    $this->assertEquals($cart->count, 0);
+
+	    $this->assertEquals($order->count, 2);
+
+	    $this->assertTrue($order->is('pending'));
 	}
 
 	/**

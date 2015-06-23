@@ -165,7 +165,12 @@ trait ShopCalculationsTrait
                 DB::raw('sum(' . Config::get('shop.item_table') . '.tax * ' . Config::get('shop.item_table') . '.quantity) as totalTax'),
                 DB::raw('sum(' . Config::get('shop.item_table') . '.shipping * ' . Config::get('shop.item_table') . '.quantity) as totalShipping')
             ])
-            ->join(Config::get('shop.item_table'), Config::get('shop.item_table') . '.' . $this->table . '_id', '=', $this->table . '.id')
+            ->join(
+                Config::get('shop.item_table'),
+                Config::get('shop.item_table') . '.' . ($this->table == Config::get('shop.order_table') ? 'order_id' : $this->table . '_id'),
+                '=',
+                $this->table . '.id'
+            )
             ->where($this->table . '.id', $this->attributes['id'])
             ->first();
         if (Config::get('shop.cache_calculations')) {

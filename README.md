@@ -526,6 +526,12 @@ Arrays can be used to remove unexistent model items:
 $cart->remove(['sku' => 'PROD0001']);
 ```
 
+To empty cart:
+
+```php
+$cart->clear();
+```
+
 #### Cart Methods
 
 ```php
