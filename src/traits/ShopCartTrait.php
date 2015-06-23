@@ -86,6 +86,7 @@ trait ShopCartTrait
             }
             $cartItem = call_user_func( Config::get('shop.item') . '::create', [
                 'user_id'       => $this->user->shopId,
+                'cart_id'       => $this->attributes['id'],
                 'sku'           => is_array($item) ? $item['sku'] : $item->sku,
                 'price'         => is_array($item) ? $item['price'] : $item->price,
                 'tax'           => is_array($item) 
@@ -259,7 +260,7 @@ trait ShopCartTrait
      */
     public function placeOrder($statusCode = null)
     {
-        if (empty($statusCode)) $status = Config::has('shop.order_status_placement');
+        if (empty($statusCode)) $statusCode = Config::get('shop.order_status_placement');
         // Create order
         $order = call_user_func( Config::get('shop.order') . '::create', [
             'user_id'       => $this->user_id,
@@ -274,6 +275,7 @@ trait ShopCartTrait
             // Update
             $this->items[$i]->save();
         }
+        $this->resetCalculations();
         return $order;
     }
 

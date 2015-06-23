@@ -14,6 +14,7 @@ namespace Amsgames\LaravelShop\Models;
 
 use Amsgames\LaravelShop\Contracts\ShopOrderInterface;
 use Amsgames\LaravelShop\Traits\ShopOrderTrait;
+use Amsgames\LaravelShop\Traits\ShopCalculationsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
@@ -34,7 +35,7 @@ class ShopOrderModel extends Model implements ShopOrderInterface
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'status'];
+    protected $fillable = ['user_id', 'statusCode'];
 
     /**
      * Creates a new instance of the model.

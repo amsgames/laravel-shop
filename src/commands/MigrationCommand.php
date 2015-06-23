@@ -62,11 +62,11 @@ class MigrationCommand extends Command
 
             $this->info('Creating migration...');
             if ($this->createMigration(compact(
-                    $cartTable,
-                    $itemTable,
-                    $couponTable,
-                    $orderStatusTable,
-                    $orderTable
+                    'cartTable',
+                    'itemTable',
+                    'couponTable',
+                    'orderStatusTable',
+                    'orderTable'
                 ))
             ) {
 
@@ -95,11 +95,11 @@ class MigrationCommand extends Command
 
             $this->info('Creating seeder...');
             if ($this->createSeeder(compact(
-                    $cartTable,
-                    $itemTable,
-                    $couponTable,
-                    $orderStatusTable,
-                    $orderTable
+                    'cartTable',
+                    'itemTable',
+                    'couponTable',
+                    'orderStatusTable',
+                    'orderTable'
                 ))
             ) {
                 $this->info('Seeder successfully created!');
@@ -150,7 +150,7 @@ class MigrationCommand extends Command
      */
     protected function createSeeder($data)
     {
-        $seederFile = base_path('/database/seeds') . '/ShopSeeder.php';
+        $seederFile = base_path('/database/seeds') . '/LaravelShopSeeder.php';
 
         $output = $this->laravel->view->make('laravel-shop::generators.seeder')->with($data)->render();
 

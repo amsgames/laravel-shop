@@ -14,7 +14,7 @@ namespace Amsgames\LaravelShop\Models;
 
 use Amsgames\LaravelShop\Contracts\ShopCartInterface;
 use Amsgames\LaravelShop\Traits\ShopCartTrait;
-use Amsgames\LaravelShop\Traits\ShopCartTrait;
+use Amsgames\LaravelShop\Traits\ShopCalculationsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
