@@ -43,7 +43,7 @@ class LaravelShopSeeder extends Seeder
 		    [
 		    		'code' 				=> 'failed',
 		    		'name' 				=> 'Failed',
-		    		'description' => 'Failed order. Payment payment or other process failed.',
+		    		'description' => 'Failed order. Payment or other process failed.',
 		    ],
 		    [
 		    		'code' 				=> 'canceled',
