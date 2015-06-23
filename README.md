@@ -464,33 +464,43 @@ $cart->add(MyCustomProduct::find(1), 3);
 Only one item will be created per sku in the cart. If an item of the same `sku` is added, just on item will remain but its quantity will increase:
 
 ```php
-// Adds 1 MyCustomProduct of id 1. Item quantity = 1
-$cart->add(MyCustomProduct::find(1));
+$product = MyCustomProduct::find(1);
 
-// Adds 3 MyCustomProduct of id 1. Item quantity = 4
-$cart->add(MyCustomProduct::find(1), 3);
+// Adds 1
+$cart->add($product);
 
-// Adds 2 MyCustomProduct of id 1. Item quantity = 6
-$cart->add(MyCustomProduct::find(1), 2);
+// Adds 3
+$cart->add($product, 3);
 
-print_r( [ count( $cart->items ), $cart->items[0]->quantity ] );  // Will print 1 as items count and 6 as quantity.
+// Adds 2
+$cart->add($product, 2);
 
-// Adds 2 MyCustomProduct of sku 99.
-$cart->add(MyCustomProduct::findBySKU(99), 2);
+echo $cart->count; // echos: 6
 
-echo count( $cart->items ) ;  // Will print 2 since we added a new item with sku 99 to the cart.
+$second_product = MyCustomProduct::findBySKU('TEST');
+
+// Adds 2 of product 'TEST'
+$cart->add($second_product, 2);
+
+// Count based on quantity
+echo $cart->count; // echos: 8
+
+// Count based on products
+echo $cart->items->count(); // echos: 2
 ```
 
 We can reset the quantity of an item to a given value:
 
 ```php
-// Adds 3 MyCustomProduct of id 1. Item quantity = 3
-$cart->add(MyCustomProduct::find(1), 3);
+// Add 3
+$cart->add($product, 3);
 
-// Adds 4 MyCustomProduct of id 1. Item quantity = 4
-$cart->add(MyCustomProduct::find(1), 4, Shop::QUANTITY_RESET);
+echo $cart->count; // echos: 3
 
-echo count( $cart->items[0]->quantity ) ;  // Echos 4
+// Reset quantity to 4
+$cart->add($product, 4, $forceReset = true);
+
+echo $cart->count; // echos: 4
 ```
 
 
@@ -509,20 +519,24 @@ $cart->add(['sku' => 'PROD0002', 'price' => 29.99], 4);
 Lest remove our test and existing model `MyCustomProduct` from cart:
 
 ```php
-$cart = Cart::current()->remove(MyCustomProduct::find(1));
+$product = MyCustomProduct::find(1);
+
+// Remove the product from cart
+$cart = Cart::current()->remove($product);
 ```
 
 The example below will remove the item completly, but it is possible to only remove a certain quantity from the cart:
 
 ```php
-// Removes 2 MyCustomProduct from cart
-$cart->remove(MyCustomProduct::find(1), 2);
+// Removes only 2 from quantity
+// If the quantity is greater than 2, then 1 item will remain in cart
+$cart->remove($product, 2);
 ```
 
 Arrays can be used to remove unexistent model items:
 
 ```php
-// Removes unexistent item model PROD0001
+// Removes by sku
 $cart->remove(['sku' => 'PROD0001']);
 ```
 
@@ -550,7 +564,7 @@ $order = $cart->placeOrder();
 
 Status can be forced in creation as well:
 ```php
-$order = $cart->placeOrder(Shop::ORDER_COMPLETED);
+$order = $cart->placeOrder('completed');
 ```
 
 #### Displaying

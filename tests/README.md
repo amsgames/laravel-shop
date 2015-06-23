@@ -129,7 +129,7 @@ class TestProduct extends Model
 }
 ```
 
-Additionally add the following route in `app\http\routes.php`:
+Additionally add the following route in `app\Http\routes.php`:
 
 ```php
 Route::get('/product/{sku}', ['as' => 'product', function ($sku) {
@@ -137,7 +137,7 @@ Route::get('/product/{sku}', ['as' => 'product', function ($sku) {
 }]);
 ```
 
-Then add the following view, called `product.blade.php`, in `resources\view\` folder:
+Then add the following view, called `product.blade.php`, in `resources\views\` folder:
 
 ```php
 {{ $product->id }}
