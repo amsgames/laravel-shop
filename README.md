@@ -1,4 +1,10 @@
-# LARAVEL SHOP (Laravel 5 Package)
+LARAVEL SHOP (Laravel 5 Package)
+--------------------------------
+
+[![Latest Stable Version](https://poser.pugx.org/amsgames/laravel-shop/v/stable)](https://packagist.org/packages/amsgames/laravel-shop)
+[![Total Downloads](https://poser.pugx.org/amsgames/laravel-shop/downloads)](https://packagist.org/packages/amsgames/laravel-shop)
+[![Latest Unstable Version](https://poser.pugx.org/amsgames/laravel-shop/v/unstable)](https://packagist.org/packages/amsgames/laravel-shop)
+[![License](https://poser.pugx.org/amsgames/laravel-shop/license)](https://packagist.org/packages/amsgames/laravel-shop)
 
 Laravel Shop is flexible way to add shop functionality to **Laravel 5**. Aimed to be the e-commerce solution for artisans.
 
@@ -53,21 +59,27 @@ On the horizon:
 
 ## Installation
 
-In order to install Laravel Shop, just add 
+In order to install Laravel Shop, you can run
 
-    "amsgames/laravel-shop": "dev-dev"
+```json
+"amsgames/laravel-shop": "dev-dev"
+```
 
 to your composer.json. Then run `composer install` or `composer update`.
 
 Then in your `config/app.php` add 
 
-    'Amsgames\LaravelShop\LaravelShopProvider'
+```php
+'Amsgames\LaravelShop\LaravelShopProvider'
+```
     
 in the `providers` array.
 
 Then add
 
-    'Shop'      => 'Amsgames\LaravelShop\LaravelShopFacade',
+```php
+'Shop'      => 'Amsgames\LaravelShop\LaravelShopFacade',
+```
     
 in the `aliases` array.
 
@@ -105,7 +117,7 @@ php artisan migrate
 
 Add the seeder to `database/seeds/DatabaseSeeder.php`:
 
-```bash
+```php
 class DatabaseSeeder extends Seeder
 {
 
