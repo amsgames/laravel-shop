@@ -88,7 +88,7 @@ trait ShopItemTrait
         foreach (array_keys($this->attributes) as $attribute) {
             if (in_array($attribute, $this->itemRouteParams)) $params[$attribute] = $this->attributes[$attribute];
         }
-        return \route($this->itemRouteName, $params);
+        return empty($this->itemRouteName) ? '#' : \route($this->itemRouteName, $params);
     }
 
     /**
@@ -135,7 +135,7 @@ trait ShopItemTrait
      */
     public function getDisplayTaxAttribute()
     {
-        return Shop::format(array_key_exists('tax', $this->attributes) ? $this->attributes['tax'] : 0);
+        return Shop::format(array_key_exists('tax', $this->attributes) ? $this->attributes['tax'] : 0.00);
     }
 
     /**
@@ -145,7 +145,7 @@ trait ShopItemTrait
      */
     public function getDisplayShippingAttribute()
     {
-        return Shop::format(array_key_exists('shipping', $this->attributes) ? $this->attributes['shipping'] : 0);
+        return Shop::format(array_key_exists('shipping', $this->attributes) ? $this->attributes['shipping'] : 0.00);
     }
 
 }
