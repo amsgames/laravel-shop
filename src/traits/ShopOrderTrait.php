@@ -124,6 +124,66 @@ trait ShopOrderTrait
     }
 
     /**
+     * Returns flag indicating if order is completed.
+     *
+     * @return bool
+     */
+    public function getIsCompletedAttribute()
+    {
+        return $this->attributes['statusCode'] == 'completed';
+    }
+
+    /**
+     * Returns flag indicating if order has failed.
+     *
+     * @return bool
+     */
+    public function getHasFailedAttribute()
+    {
+        return $this->attributes['statusCode'] == 'failed';
+    }
+
+    /**
+     * Returns flag indicating if order is canceled.
+     *
+     * @return bool
+     */
+    public function getIsCanceledAttribute()
+    {
+        return $this->attributes['statusCode'] == 'canceled';
+    }
+
+    /**
+     * Returns flag indicating if order is in process.
+     *
+     * @return bool
+     */
+    public function getIsInProcessAttribute()
+    {
+        return $this->attributes['statusCode'] == 'in_process';
+    }
+
+    /**
+     * Returns flag indicating if order is in creation.
+     *
+     * @return bool
+     */
+    public function getIsInCreationAttribute()
+    {
+        return $this->attributes['statusCode'] == 'in_creation';
+    }
+
+    /**
+     * Returns flag indicating if order is in creation.
+     *
+     * @return bool
+     */
+    public function getIsPendingAttribute()
+    {
+        return $this->attributes['statusCode'] == 'pending';
+    }
+
+    /**
      * Retrieves item from order;
      *
      * @param string $sku SKU of item.

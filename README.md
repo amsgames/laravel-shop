@@ -661,33 +661,34 @@ Find orders form user:
 // Get orders from specific user ID.
 $orders = Order::findByUser($userId);
 // Get orders from specific user ID and status.
-$canceled_orders = Order::findByUser($userId, Shop::ORDER_CANCELED);
+$canceled_orders = Order::findByUser($userId, 'completed');
 ```
 
 #### Order Methods
 
 ```php
+$completed = $order->isCompleted
 // Checks if order is in a specific status.
-$success = $order->is(Shop::ORDER_COMPLETED);
+$success = $order->is('completed');
 
 // Quering
 // Get orders from specific user ID.
 $orders = Order::whereUser($userId)->get();
 // Get orders from specific user ID and status.
 $completed_orders = Order::whereUser($userId)
-		->whereStatus(Shop::ORDER_COMPLETED)
+		->whereStatus('completed')
 		->get();
 ```
 
 #### Order Status Codes
 
 Status codes out of the box:
-- `Shop::ORDER_IN_CREATION` &mdash; Order status in creation.
-- `Shop::ORDER_PENDING` &mdash; i.e. Pending for payment.
-- `Shop::ORDER_IN_PROCESS` &mdash; i.e. In process of shipping. In process of revision.
-- `Shop::ORDER_COMPLETED` &mdash; i.e. When payment has been made and items were delivered to client.
-- `Shop::ORDER_FAILED` &mdash; i.e. When payment failed.
-- `Shop::ORDER_CANCELED` &mdash; i.e. When an order has been canceled by the user.
+- `in_creation` &mdash; Order status in creation.
+- `pending` &mdash; i.e. Pending for payment.
+- `in_process` &mdash; i.e. In process of shipping. In process of revision.
+- `completed` &mdash; i.e. When payment has been made and items were delivered to client.
+- `failed` &mdash; i.e. When payment failed.
+- `canceled` &mdash; i.e. When an order has been canceled by the user.
 
 You can use your own custom status codes. Simply add them manually to the `order_status` database table or create a custom seeder like this:
 

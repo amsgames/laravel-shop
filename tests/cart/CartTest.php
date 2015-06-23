@@ -160,7 +160,7 @@ class CartTest extends TestCase
 
 	    $this->assertEquals($order->count, 2);
 
-	    $this->assertTrue($order->is('pending'));
+	    $this->assertTrue($order->isPending);
 	}
 
 	/**
