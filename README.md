@@ -488,7 +488,7 @@ We can reset the quantity of an item to a given value:
 $cart->add(MyCustomProduct::find(1), 3);
 
 // Adds 4 MyCustomProduct of id 1. Item quantity = 4
-$cart->add(MyCustomProduct::find(1), 4, $forceReset = true);
+$cart->add(MyCustomProduct::find(1), 4, Shop::QUANTITY_RESET);
 
 echo count( $cart->items[0]->quantity ) ;  // Echos 4
 ```

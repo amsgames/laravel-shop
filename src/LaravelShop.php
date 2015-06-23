@@ -59,6 +59,12 @@ class LaravelShop
     const ORDER_CANCELED            = 'canceled';
 
     /**
+     * Forces quantity to reset when adding items to cart.
+     * @var bool
+     */
+    const QUANTITY_RESET            = true;
+
+    /**
      * Laravel application
      *
      * @var \Illuminate\Foundation\Application

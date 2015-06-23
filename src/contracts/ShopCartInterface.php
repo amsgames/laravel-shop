@@ -154,5 +154,9 @@ interface ShopCartInterface
      */
     public function placeOrder($status = null);
 
+    /**
+     * Whipes put cart
+     */
+    public function clear();
 
 }

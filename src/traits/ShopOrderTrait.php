@@ -123,4 +123,20 @@ trait ShopOrderTrait
         return $this->attributes['statusCode'] == $statusCode;
     }
 
+    /**
+     * Retrieves item from order;
+     *
+     * @param string $sku SKU of item.
+     *
+     * @return mixed
+     */
+    private function getItem($sku)
+    {
+        $className  = Config::get('shop.item');
+        $item       = new $className();
+        return $item->where('sku', $sku)
+            ->where('order_id', $this->attributes['id'])
+            ->first();
+    }
+
 }

@@ -15,6 +15,7 @@ namespace Amsgames\LaravelShop\Traits;
 use Shop;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 trait ShopCartTrait
@@ -74,10 +75,8 @@ trait ShopCartTrait
     public function add($item, $quantity = 1, $quantityReset = false)
     {
         if (!is_array($item) && !$item->isShoppable) return;
-        // Get added item
-        $cartItem = $this->items
-            ->where('sku', is_array($item) ? $item['sku'] : $item->sku)
-            ->first();
+        // Get item
+        $cartItem = $this->getItem(is_array($item) ? $item['sku'] : $item->sku);
         // Add new or sum quantity
         if (empty($cartItem)) {
             $reflection = null;
@@ -112,7 +111,6 @@ trait ShopCartTrait
                 'class'         => is_array($item) ? null : $reflection->getName(),
                 'reference_id'  => is_array($item) ? null : $item->shopId,
             ]);
-            $this->items()->save($cartItem);
         } else {
             $cartItem->quantity = $quantityReset 
                 ? $quantity 
@@ -135,9 +133,7 @@ trait ShopCartTrait
     public function remove($item, $quantity = 0)
     {
         // Get item
-        $cartItem = $this->items
-            ->where('sku', is_array($item) ? $item['sku'] : $item->sku)
-            ->first();
+        $cartItem = $this->getItem(is_array($item) ? $item['sku'] : $item->sku);
         // Remove or decrease quantity
         if (!empty($cartItem)) {
             if (!empty($quantity)) {
@@ -241,6 +237,7 @@ trait ShopCartTrait
      */
     public function scopeFindByUser($query, $userId)
     {
+        if (empty($userId)) return;
         $cart = $query->whereUser($userId)->first();
         if (empty($cart)) {
             $cart = call_user_func( Config::get('shop.cart') . '::create', [
@@ -277,6 +274,34 @@ trait ShopCartTrait
         }
         $this->resetCalculations();
         return $order;
+    }
+
+    /**
+     * Whipes put cart
+     */
+    public function clear()
+    {
+        DB::table(Config::get('shop.item_table'))
+            ->where('cart_id', $this->attributes['id'])
+            ->delete();
+        $this->resetCalculations();
+        return $this;
+    }
+
+    /**
+     * Retrieves item from cart;
+     *
+     * @param string $sku SKU of item.
+     *
+     * @return mixed
+     */
+    private function getItem($sku)
+    {
+        $className  = Config::get('shop.item');
+        $item       = new $className();
+        return $item->where('sku', $sku)
+            ->where('cart_id', $this->attributes['id'])
+            ->first();
     }
 
 }
