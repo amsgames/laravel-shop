@@ -10,6 +10,8 @@ Laravel Shop is flexible way to add shop functionality to **Laravel 5**. Aimed t
 
 Laravel shop adds shopping cart, orders and payments to your new or existing project; letting you transform any model into a shoppable item.
 
+**NOTE:** A paypal gateway is currently in development. Is recommended to use this package once paypal is available because current transactions and gateway functionality may be affected.
+
 ## Contents
 
 - [Scope](#scope)
@@ -23,8 +25,8 @@ Laravel shop adds shopping cart, orders and payments to your new or existing pro
         - [Transaction](#transaction)
         - [User](#user)
         - [Existing Model Conversion](#existing-model-conversion)
-        - [Dump Autoload](#dump-autoload)
-        - [Payment Gateways](#payment-gateways)
+    - [Dump Autoload](#dump-autoload)
+    - [Payment Gateways](#payment-gateways)
 - [Usage](#usage)
     - [Shop](#shop)
         - [Payment Gateway](#payment-gateway)
@@ -58,6 +60,7 @@ Current version includes:
 Under development:
 
 - Paypal Gateway
+- Events
 
 On the horizon:
 
@@ -443,7 +446,7 @@ class MyCustomProduct extends Model {
 }
 ```
 
-#### Dump Autoload
+### Dump Autoload
 Dump composer autoload
 
 ```bash
@@ -452,7 +455,7 @@ composer dump-autoload
 
 **And you are ready to go.**
 
-#### Payment Gateways
+### Payment Gateways
 
 Installed payment gateways can be configured in the `shop.php` config file, i.e.:
 
