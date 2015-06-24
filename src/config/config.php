@@ -86,6 +86,27 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Transaction Model
+    |--------------------------------------------------------------------------
+    |
+    | This is the Transaction model used by LaravelShop to create correct relations.
+    | Update the model if it is in a different namespace.
+    |
+    */
+    'transaction' => 'App\Transaction',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Transaction Database Table
+    |--------------------------------------------------------------------------
+    |
+    | This is the table used by LaravelShop to save cart data to the database.
+    |
+    */
+    'transaction_table' => 'transactions',
+
+    /*
+    |--------------------------------------------------------------------------
     | Coupon Model
     |--------------------------------------------------------------------------
     |
@@ -205,5 +226,27 @@ return [
     |
     */
     'order_status_placement' => 'pending',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Order status placement
+    |--------------------------------------------------------------------------
+    |
+    | Status that determines if an order has been established and if items were purchased.
+    |
+    */
+    'order_status_purchase' => ['completed', 'in_process'],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Payment Gateways
+    |--------------------------------------------------------------------------
+    |
+    | List of payment gateways.
+    |
+    */
+    'gateways' => [
+        //'test'            =>  'GatewayTest',
+    ],
 
 ];

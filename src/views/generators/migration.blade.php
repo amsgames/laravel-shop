@@ -92,8 +92,28 @@ class ShopSetupTables extends Migration
                 ->on('{{ $usersTable }}')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->foreign('statusCode')
+                ->references('code')
+                ->on('{{ $orderStatusTable }}')
+                ->onUpdate('cascade');
             $table->index(['user_id', 'statusCode']);
             $table->index(['id', 'user_id', 'statusCode']);
+        });
+        // Create table for storing transactions
+        Schema::create('{{ $transactionTable }}', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('order_id')->unsigned();
+            $table->string('gateway', 64);
+            $table->string('transaction_id', 64);
+            $table->string('detail', 1024)->nullable();
+            $table->timestamps();
+            $table->foreign('order_id')
+                ->references('id')
+                ->on('{{ $orderTable }}')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->index(['order_id']);
+            $table->index(['gateway', 'transaction_id']);
         });
     }
 
@@ -104,6 +124,7 @@ class ShopSetupTables extends Migration
      */
     public function down()
     {
+        Schema::drop('{{ $transactionTable }}');
         Schema::drop('{{ $orderTable }}');
         Schema::drop('{{ $orderStatusTable }}');
         Schema::drop('{{ $couponTable }}');

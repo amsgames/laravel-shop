@@ -17,7 +17,6 @@ use InvalidArgumentException;
 
 trait ShopOrderTrait
 {
-
     /**
      * Boot the user model
      * Attach event listener to remove the relationship records when trying to delete
@@ -56,6 +55,16 @@ trait ShopOrderTrait
     public function items()
     {
         return $this->hasMany(Config::get('shop.item'), 'order_id');
+    }
+
+    /**
+     * One-to-Many relations with Item.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function transactions()
+    {
+        return $this->hasMany(Config::get('shop.transaction'), 'order_id');
     }
 
     /**
@@ -184,6 +193,25 @@ trait ShopOrderTrait
     }
 
     /**
+     * Creates the order's transaction.
+     *
+     * @param string $gateway       Gateway.
+     * @param mixed  $transactionId Transaction ID.
+     * @param string $detail        Transaction detail.
+     *
+     * @return object
+     */
+    public function placeTransaction($gateway, $transactionId, $detail = '')
+    {
+        return call_user_func(Config::get('shop.transaction') . '::create', [
+            'order_id'          => $this->attributes['id'],
+            'gateway'           => $gateway,
+            'transaction_id'    => $transactionId,
+            'detail'            => $detail,
+        ]);
+    }
+
+    /**
      * Retrieves item from order;
      *
      * @param string $sku SKU of item.
@@ -198,5 +226,4 @@ trait ShopOrderTrait
             ->where('order_id', $this->attributes['id'])
             ->first();
     }
-
 }

@@ -18,7 +18,7 @@ interface ShopOrderInterface
     /**
      * One-to-One relations with the user model.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToOne
      */
     public function user();
 
@@ -28,6 +28,13 @@ interface ShopOrderInterface
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function items();
+
+    /**
+     * One-to-Many relations with Item.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function transactions();
 
     /**
      * Returns flag indicating if order is lock and cant be modified by the user.
@@ -134,5 +141,16 @@ interface ShopOrderInterface
      * @return bool
      */
     public function is($statusCode);
+
+    /**
+     * Creates the order's transaction.
+     *
+     * @param string $gateway       Gateway.
+     * @param mixed  $transactionId Transaction ID.
+     * @param string $detail        Transaction detail.
+     *
+     * @return object
+     */
+    public function placeTransaction($gateway, $transactionId, $detail = '');
 
 }

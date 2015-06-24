@@ -3,11 +3,13 @@
 namespace Amsgames\LaravelShop;
 
 /**
- * This file is part of Entrust,
- * a role & permission management solution for Laravel.
+ * This file is part of LaravelShop,
+ * A shop solution for Laravel.
  *
+ * @author Alejandro Mostajo
+ * @copyright Amsgames, LLC
  * @license MIT
- * @package Zizaco\Entrust
+ * @package Amsgames\LaravelShop
  */
 
 use Illuminate\Support\Facades\Facade;

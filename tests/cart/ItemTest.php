@@ -9,7 +9,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ItemTest extends TestCase
 {
-
 	/**
 	 * Tests item trait methods on external model.
 	 */
@@ -87,5 +86,4 @@ class ItemTest extends TestCase
 
 	    $product->delete();
 	}
-
 }

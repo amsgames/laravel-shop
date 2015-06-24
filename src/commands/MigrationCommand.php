@@ -45,6 +45,7 @@ class MigrationCommand extends Command
         $couponTable        = Config::get('shop.coupon_table');
         $orderStatusTable   = Config::get('shop.order_status_table');
         $orderTable         = Config::get('shop.order_table');
+        $transactionTable   = Config::get('shop.transaction_table');
 
         // Migrations
         $this->line('');
@@ -66,7 +67,8 @@ class MigrationCommand extends Command
                     'itemTable',
                     'couponTable',
                     'orderStatusTable',
-                    'orderTable'
+                    'orderTable',
+                    'transactionTable'
                 ))
             ) {
 
@@ -99,7 +101,8 @@ class MigrationCommand extends Command
                     'itemTable',
                     'couponTable',
                     'orderStatusTable',
-                    'orderTable'
+                    'orderTable',
+                    'transactionTable'
                 ))
             ) {
                 $this->info('Seeder successfully created!');
