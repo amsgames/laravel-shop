@@ -75,7 +75,7 @@ On the horizon:
 In order to install Laravel Shop, you can run
 
 ```json
-"amsgames/laravel-shop": "dev-dev"
+"amsgames/laravel-shop": "v0.2.0"
 ```
 
 to your composer.json. Then run `composer install` or `composer update`.
