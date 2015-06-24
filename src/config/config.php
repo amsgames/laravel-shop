@@ -246,7 +246,7 @@ return [
     |
     */
     'gateways' => [
-        //'test'            =>  'GatewayTest',
+        //'testPass'            =>  'GatewayPass',
     ],
 
 ];

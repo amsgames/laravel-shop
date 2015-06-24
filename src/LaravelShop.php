@@ -17,6 +17,9 @@ use Amsgames\LaravelShop\Gateways;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use Amsgames\LaravelShop\Exceptions\CheckoutException;
+use Amsgames\LaravelShop\Exceptions\GatewayException;
+use Amsgames\LaravelShop\Exceptions\ShopException;
 
 class LaravelShop
 {
@@ -31,6 +34,12 @@ class LaravelShop
      * @var string
      */
     protected static $gateway       = null;
+
+    /**
+     * Gatway in use.
+     * @var string
+     */
+    protected static $exception     = null;
 
     /**
      * Laravel application
@@ -55,8 +64,9 @@ class LaravelShop
      */
     public function __construct($app)
     {
-        $this->app = $app;
-        static::$gateway = $this->getGateway();
+        $this->app          = $app;
+        static::$gateway    = $this->getGateway();
+        static::$exception  = null;
     }
 
     /**
@@ -75,7 +85,7 @@ class LaravelShop
     public static function setGateway($gateway)
     {
         if (!array_key_exists($gateway, Config::get('shop.gateways')))
-            throw new Exception('Invalid gateway.');
+            throw new ShopException('Invalid gateway.');
         static::$gateway = $gateway;
         Session::push('shop.gateway', $gateway);
     }
@@ -92,14 +102,29 @@ class LaravelShop
      * Checkout current user's cart.
      *
      * @param object $cart For specific cart.
+     *
+     * @return bool
      */
     public static function checkout($cart = null)
     {
-        if (empty(static::$gateway))
-            throw new Exception('Payment gateway not selected.');
-        if (empty($cart)) $cart = Auth::user()->cart;
-        $gateway = static::instanceGateway();
-        $gateway->onCheckout($cart);
+        try {
+            if (empty(static::$gateway)) {
+                throw new ShopException('Payment gateway not selected.');
+            }
+            if (empty($cart)) $cart = Auth::user()->cart;
+            $gateway = static::instanceGateway();
+            $gateway->onCheckout($cart);
+        } catch (ShopException $e) {
+            static::setException($e);
+            return false;
+        } catch (CheckoutException $e) {
+            static::$exception = $e;
+            return false;
+        } catch (GatewayException $e) {
+            static::$exception = $e;
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -111,23 +136,37 @@ class LaravelShop
      */
     public static function placeOrder($cart = null)
     {
-        if (empty(static::$gateway))
-            throw new Exception('Payment gateway not selected.');
-        if (empty($cart)) $cart = Auth::user()->cart;
-        $order = $cart->placeOrder();
-        $gateway = static::instanceGateway();
-        if ($gateway->onCharge($order)) {
-            $order->statusCode = 'completed';
-            $order->save();
-            // Create transaction
-            $order->placeTransaction(
-                static::$gateway,
-                $gateway->getTransactionId(),
-                $gateway->getTransactionDetail()
-            );
-        } else {
-            $order->statusCode = 'failed';
-            $order->save();
+        try {
+            if (empty(static::$gateway))
+                throw new ShopException('Payment gateway not selected.');
+            if (empty($cart)) $cart = Auth::user()->cart;
+            $order = $cart->placeOrder();
+            $gateway = static::instanceGateway();
+            if ($gateway->onCharge($order)) {
+                $order->statusCode = 'completed';
+                $order->save();
+                // Create transaction
+                $order->placeTransaction(
+                    static::$gateway,
+                    $gateway->getTransactionId(),
+                    $gateway->getTransactionDetail()
+                );
+            } else {
+                $order->statusCode = 'failed';
+                $order->save();
+            }
+        } catch (ShopException $e) {
+            static::setException($e);
+            if (isset($order)) {
+                $order->statusCode = 'failed';
+                $order->save();
+            }
+        } catch (GatewayException $e) {
+            static::$exception = $e;
+            if (isset($order)) {
+                $order->statusCode = 'failed';
+                $order->save();
+            }
         }
         return $order;
     }
@@ -164,6 +203,27 @@ class LaravelShop
     public static function gateway()
     {
         return static::instanceGateway();
+    }
+
+    /**
+     * Retuns exception.
+     *
+     * @return Exception
+     */
+    public static function exception()
+    {
+        return static::$exception;
+    }
+
+    /**
+     * Saves exception in class.
+     *
+     * @param mixed $e Exception
+     */
+    protected static function setException($e)
+    {
+        Log::error($e);
+        static::$exception = $e;
     }
 
     /**

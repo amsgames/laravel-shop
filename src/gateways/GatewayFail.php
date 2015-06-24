@@ -12,10 +12,12 @@ namespace Amsgames\LaravelShop\Gateways;
  * @package Amsgames\LaravelShop
  */
 
-use Log;
+use Amsgames\LaravelShop\Exceptions\CheckoutException;
+use Amsgames\LaravelShop\Exceptions\GatewayException;
+use Amsgames\LaravelShop\Exceptions\ShopException;
 use Amsgames\LaravelShop\Core\PaymentGateway;
 
-class GatewayTest extends PaymentGateway
+class GatewayFail extends PaymentGateway
 {
     /**
      * Called on cart checkout.
@@ -24,8 +26,7 @@ class GatewayTest extends PaymentGateway
      */
     public function onCheckout($cart)
     {
-    	//Log::debug('Gateway:: onCheckout');
-    	//Log::debug($cart);
+        throw new CheckoutException('Checkout failed.');
     }
 
     /**
@@ -37,9 +38,8 @@ class GatewayTest extends PaymentGateway
      */
     public function onCharge($order)
     {
-    	//Log::debug('Gateway:: onCharge');
-    	//Log::debug($order);
-    	return true;
+        throw new GatewayException('Payment failed.');
+    	return false;
     }
 
     /**

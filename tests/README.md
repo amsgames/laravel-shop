@@ -35,6 +35,17 @@ The `tests` directory must be added to the project's `phpunit.xml` file:
 
 Then be sure to setup and configure the package in the laravel's project as stated in the package's readme file.
 
+## Gateways
+
+Add the following test gateways the array in `shop.php` config file:
+
+```php
+'gateways' => [
+    'testPass'            =>  Amsgames\LaravelShop\Gateways\GatewayPass::class,
+    'testFail'            =>  Amsgames\LaravelShop\Gateways\GatewayFail::class,
+],
+```
+
 ## Test Product
 
 Create the TestProduct model and database table used in the test cases:

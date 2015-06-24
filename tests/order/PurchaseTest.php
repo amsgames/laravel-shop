@@ -16,15 +16,24 @@ class PurchaseTest extends TestCase
 	 */
 	public function testGateway()
 	{
-		Shop::setGateway('test');
+		Shop::setGateway('testPass');
 
-		$this->assertEquals(Shop::getGateway(), 'test');
+		$this->assertEquals(Shop::getGateway(), 'testPass');
 
 		$gateway = Shop::gateway();
 
 		$this->assertNotNull($gateway);
 
 		$this->assertNotEmpty($gateway->toJson());
+	}
+	/**
+	 * Tests if gateway is being selected and created correctly.
+	 */
+	public function testUnselectedGateway()
+	{
+		$this->assertFalse(Shop::checkout());
+
+		$this->assertEquals(Shop::exception()->getMessage(), 'Payment gateway not selected.');
 	}
 
 	/**
@@ -42,7 +51,7 @@ class PurchaseTest extends TestCase
 			->add(['sku' => '0001', 'price' => 1.99])
 			->add(['sku' => '0002', 'price' => 2.99]);
 
-		Shop::setGateway('test');
+		Shop::setGateway('testPass');
 
 		Shop::checkout();
 
@@ -53,6 +62,40 @@ class PurchaseTest extends TestCase
 		$this->assertNotEmpty($order->id);
 
 		$this->assertTrue($order->isCompleted);
+
+		$this->user->delete();
+	}
+
+	/**
+	 * Tests a purchase and shop flow.
+	 */
+	public function testFailPurchase()
+	{
+		// Prepare
+
+		$this->user = factory('App\User')->create(['password' => Hash::make('laravel-shop')]);
+
+		$bool = Auth::attempt(['email' => $this->user->email, 'password' => 'laravel-shop']);
+
+		$cart = App\Cart::current()
+			->add(['sku' => '0001', 'price' => 1.99])
+			->add(['sku' => '0002', 'price' => 2.99]);
+
+		Shop::setGateway('testFail');
+
+		$this->assertFalse(Shop::checkout());
+
+		$this->assertEquals(Shop::exception()->getMessage(), 'Checkout failed.');
+
+		$order = Shop::placeOrder();
+
+		$this->assertNotNull($order);
+
+		$this->assertNotEmpty($order->id);
+
+		$this->assertTrue($order->hasFailed);
+
+		$this->assertEquals(Shop::exception()->getMessage(), 'Payment failed.');
 
 		$this->user->delete();
 	}
