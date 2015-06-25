@@ -27,19 +27,25 @@ class LaravelShop
      * Forces quantity to reset when adding items to cart.
      * @var bool
      */
-    const QUANTITY_RESET            = true;
+    const QUANTITY_RESET                = true;
+
+    /**
+     * Gateway in use.
+     * @var string
+     */
+    protected static $gatewayKey        = null;
+
+    /**
+     * Gateway instance.
+     * @var object
+     */
+    protected static $gateway           = null;
 
     /**
      * Gatway in use.
      * @var string
      */
-    protected static $gateway       = null;
-
-    /**
-     * Gatway in use.
-     * @var string
-     */
-    protected static $exception     = null;
+    protected static $exception         = null;
 
     /**
      * Laravel application
@@ -64,9 +70,10 @@ class LaravelShop
      */
     public function __construct($app)
     {
-        $this->app          = $app;
-        static::$gateway    = $this->getGateway();
-        static::$exception  = null;
+        $this->app              = $app;
+        static::$gatewayKey     = $this->getGateway();
+        static::$exception      = null;
+        static::$gateway        = static::instanceGateway();
     }
 
     /**
@@ -82,12 +89,13 @@ class LaravelShop
     /**
      * Checkout current user's cart.
      */
-    public static function setGateway($gateway)
+    public static function setGateway($gatewayKey)
     {
-        if (!array_key_exists($gateway, Config::get('shop.gateways')))
+        if (!array_key_exists($gatewayKey, Config::get('shop.gateways')))
             throw new ShopException('Invalid gateway.');
-        static::$gateway = $gateway;
-        Session::push('shop.gateway', $gateway);
+        static::$gatewayKey = $gatewayKey;
+        static::$gateway    = static::instanceGateway();
+        Session::push('shop.gateway', $gatewayKey);
     }
 
     /**
@@ -108,12 +116,11 @@ class LaravelShop
     public static function checkout($cart = null)
     {
         try {
-            if (empty(static::$gateway)) {
+            if (empty(static::$gatewayKey)) {
                 throw new ShopException('Payment gateway not selected.');
             }
             if (empty($cart)) $cart = Auth::user()->cart;
-            $gateway = static::instanceGateway();
-            $gateway->onCheckout($cart);
+            static::$gateway->onCheckout($cart);
         } catch (ShopException $e) {
             static::setException($e);
             return false;
@@ -137,19 +144,18 @@ class LaravelShop
     public static function placeOrder($cart = null)
     {
         try {
-            if (empty(static::$gateway))
+            if (empty(static::$gatewayKey))
                 throw new ShopException('Payment gateway not selected.');
             if (empty($cart)) $cart = Auth::user()->cart;
             $order = $cart->placeOrder();
-            $gateway = static::instanceGateway();
-            if ($gateway->onCharge($order)) {
+            if (static::$gateway->onCharge($order)) {
                 $order->statusCode = 'completed';
                 $order->save();
                 // Create transaction
                 $order->placeTransaction(
-                    static::$gateway,
-                    $gateway->getTransactionId(),
-                    $gateway->getTransactionDetail()
+                    static::$gatewayKey,
+                    static::$gateway->getTransactionId(),
+                    static::$gateway->getTransactionDetail()
                 );
             } else {
                 $order->statusCode = 'failed';
@@ -201,8 +207,8 @@ class LaravelShop
      * @return object
      */
     public static function gateway()
-    {
-        return static::instanceGateway();
+    {   
+        return static::$gateway;
     }
 
     /**
@@ -232,8 +238,8 @@ class LaravelShop
      */
     protected static function instanceGateway()
     {
-        if (empty(static::$gateway)) return;
-        $className = '\\' . Config::get('shop.gateways')[static::$gateway];
-        return new $className(static::$gateway);
+        if (empty(static::$gatewayKey)) return;
+        $className = '\\' . Config::get('shop.gateways')[static::$gatewayKey];
+        return new $className(static::$gatewayKey);
     }
 }

@@ -43,9 +43,9 @@ class PurchaseTest extends TestCase
 	{
 		// Prepare
 
-		$this->user = factory('App\User')->create(['password' => Hash::make('laravel-shop')]);
+		$user = factory('App\User')->create(['password' => Hash::make('laravel-shop')]);
 
-		$bool = Auth::attempt(['email' => $this->user->email, 'password' => 'laravel-shop']);
+		$bool = Auth::attempt(['email' => $user->email, 'password' => 'laravel-shop']);
 
 		$cart = App\Cart::current()
 			->add(['sku' => '0001', 'price' => 1.99])
@@ -63,7 +63,7 @@ class PurchaseTest extends TestCase
 
 		$this->assertTrue($order->isCompleted);
 
-		$this->user->delete();
+		$user->delete();
 	}
 
 	/**
@@ -73,9 +73,9 @@ class PurchaseTest extends TestCase
 	{
 		// Prepare
 
-		$this->user = factory('App\User')->create(['password' => Hash::make('laravel-shop')]);
+		$user = factory('App\User')->create(['password' => Hash::make('laravel-shop')]);
 
-		$bool = Auth::attempt(['email' => $this->user->email, 'password' => 'laravel-shop']);
+		$bool = Auth::attempt(['email' => $user->email, 'password' => 'laravel-shop']);
 
 		$cart = App\Cart::current()
 			->add(['sku' => '0001', 'price' => 1.99])
@@ -97,6 +97,6 @@ class PurchaseTest extends TestCase
 
 		$this->assertEquals(Shop::exception()->getMessage(), 'Payment failed.');
 
-		$this->user->delete();
+		$user->delete();
 	}
 }

@@ -61,7 +61,7 @@ class LaravelShopProvider extends ServiceProvider
      */
     private function registerShop()
     {
-        $this->app->bind('shop', function ($app) {
+        $this->app->singleton('shop', function ($app) {
             return new LaravelShop($app);
         });
     }
@@ -98,7 +98,7 @@ class LaravelShopProvider extends ServiceProvider
     public function provides()
     {
         return [
-            'command.laravel-shop.migration'
+            'shop', 'command.laravel-shop.migration'
         ];
     }
 	
