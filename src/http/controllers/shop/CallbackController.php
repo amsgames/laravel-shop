@@ -15,18 +15,18 @@ class CallbackController extends Controller
      * @param  array  $data
      * @return User
      */
-    protected function process(Request $request, $status, $id, $token)
+    protected function process(Request $request, $status, $id, $shoptoken)
     {
         $validator = Validator::make(
             [
                 'id'        => $id,
                 'status'    => $status,
-                'token'     => $token,
+                'shoptoken' => $shoptoken,
             ],
             [
                 'id'        => 'required|exists:' . config('shop.order_table') . ',id',
                 'status'    => 'required|in:success,fail',
-                'token'     => 'required|exists:' . config('shop.transaction_table') . ',token,order_id,' . $id,
+                'shoptoken' => 'required|exists:' . config('shop.transaction_table') . ',token,order_id,' . $id,
             ]
         );
 
@@ -36,7 +36,7 @@ class CallbackController extends Controller
 
         $order = call_user_func(config('shop.order') . '::find', $id);
 
-        $transaction = $order->transactions()->where('token', $token)->first();
+        $transaction = $order->transactions()->where('token', $shoptoken)->first();
 
         Shop::callback($order, $transaction, $status, $request->all());
 

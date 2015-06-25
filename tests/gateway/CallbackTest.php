@@ -93,7 +93,7 @@ class CallbackTest extends TestCase
 
 		$this->assertTrue($order->isPending);
 
-	    $response = $this->call('GET', $callback);
+		$response = $this->call('GET', $callback);
 
 		$this->assertTrue(Shop::gateway()->getDidCallback());
 	}

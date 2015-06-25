@@ -117,9 +117,9 @@ class LaravelShopProvider extends ServiceProvider
 
             $router->group(['prefix' => 'shop'], function ($router) {
 
-                $router->get('callback/payment/{status}/{id}/{token}', ['as' => 'shop.callback', 'uses' => 'Shop\CallbackController@process']);
+                $router->get('callback/payment/{status}/{id}/{shoptoken}', ['as' => 'shop.callback', 'uses' => 'Shop\CallbackController@process']);
 
-                $router->post('callback/payment/{status}/{id}/{token}', ['as' => 'shop.callback', 'uses' => 'Shop\CallbackController@process']);
+                $router->post('callback/payment/{status}/{id}/{shoptoken}', ['as' => 'shop.callback', 'uses' => 'Shop\CallbackController@process']);
 
             });
 

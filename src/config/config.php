@@ -256,7 +256,8 @@ return [
     |
     */
     'gateways' => [
-        //'testPass'            =>  'GatewayPass',
+        'paypal'            =>  Amsgames\LaravelShopGatewayPaypal\GatewayPayPal::class,
+        'paypalExpress'     =>  Amsgames\LaravelShopGatewayPaypal\GatewayPayPalExpress::class,,
     ],
 
     /*

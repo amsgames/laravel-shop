@@ -79,6 +79,15 @@ abstract class PaymentGateway implements PaymentGatewayInterface, Arrayable, Jso
         $this->transactionId = uniqid();
         $this->token         = uniqid();
     }
+    
+    /**
+     * Called on cart checkout.
+     *
+     * @param Order $order Order.
+     */
+    public function onCheckout($cart)
+    {
+    }
 
     /**
      * Called by shop when payment gateway calls callback url.

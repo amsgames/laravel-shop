@@ -18,15 +18,6 @@ use Amsgames\LaravelShop\Core\PaymentGateway;
 class GatewayPass extends PaymentGateway
 {
     /**
-     * Called on cart checkout.
-     *
-     * @param Order $order Order.
-     */
-    public function onCheckout($cart)
-    {
-    }
-
-    /**
      * Called by shop to charge order's amount.
      *
      * @param Order $order Order.
