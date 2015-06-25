@@ -106,6 +106,7 @@ class ShopSetupTables extends Migration
             $table->string('gateway', 64);
             $table->string('transaction_id', 64);
             $table->string('detail', 1024)->nullable();
+            $table->string('token')->nullable();
             $table->timestamps();
             $table->foreign('order_id')
                 ->references('id')
@@ -114,6 +115,7 @@ class ShopSetupTables extends Migration
                 ->onDelete('cascade');
             $table->index(['order_id']);
             $table->index(['gateway', 'transaction_id']);
+            $table->index(['order_id', 'token']);
         });
     }
 

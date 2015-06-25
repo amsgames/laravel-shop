@@ -22,7 +22,7 @@ interface PaymentGatewayInterface
     /**
      * Called on cart checkout.
      *
-     * @param Order $order Order.
+     * @param Cart $cart Cart.
      */
     public function onCheckout($cart);
 
@@ -49,5 +49,44 @@ interface PaymentGatewayInterface
      * @return string
      */
     public function getTransactionDetail();
+
+    /**
+     * Returns token.
+     *
+     * @return string
+     */
+    public function getTransactionToken();
+
+    /**
+     * Called by shop when payment gateway calls callback url.
+     * Success result
+     *
+     * @param Order $order Order.
+     * @param mixed $data  Request input from callback.
+     */
+    public function onCallbackSuccess($order, $data = null);
+
+    /**
+     * Called by shop when payment gateway calls callback url.
+     * Failed result
+     *
+     * @param Order $order Order.
+     * @param mixed $data  Request input from callback.
+     */
+    public function onCallbackFail($order, $data = null);
+
+    /**
+     * Sets callback urls
+     *
+     * @param Order $order Order.
+     */
+    public function setCallbacks($order);
+
+    /**
+     * Returns transaction status code.
+     *
+     * @return string
+     */
+    public function getTransactionStatusCode();
 
 }

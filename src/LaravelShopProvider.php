@@ -11,7 +11,8 @@ namespace Amsgames\LaravelShop;
  * @package Amsgames\LaravelShop
  */
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Routing\Router;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class LaravelShopProvider extends ServiceProvider
 {
@@ -28,8 +29,10 @@ class LaravelShopProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Router $router)
     {
+        parent::boot($router);
+
         // Publish config files
         $this->publishes([
             __DIR__ . '/config/config.php' => config_path('shop.php'),
@@ -100,6 +103,27 @@ class LaravelShopProvider extends ServiceProvider
         return [
             'shop', 'command.laravel-shop.migration'
         ];
+    }
+
+    /**
+     * Maps router.
+     * Add package special controllers.
+     *
+     * @param Router $route Router.
+     */
+    public function map(Router $router)
+    {
+        $router->group(['namespace' => 'Amsgames\LaravelShop\Http\Controllers'], function($router) {
+
+            $router->group(['prefix' => 'shop'], function ($router) {
+
+                $router->get('callback/payment/{status}/{id}/{token}', ['as' => 'shop.callback', 'uses' => 'Shop\CallbackController@process']);
+
+                $router->post('callback/payment/{status}/{id}/{token}', ['as' => 'shop.callback', 'uses' => 'Shop\CallbackController@process']);
+
+            });
+
+        });
     }
 	
 }

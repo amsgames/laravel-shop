@@ -33,7 +33,7 @@ class ShopTransactionModel extends Model implements ShopTransactionInterface
      *
      * @var array
      */
-    protected $fillable = ['order_id', 'gateway', 'transaction_id', 'detail'];
+    protected $fillable = ['order_id', 'gateway', 'transaction_id', 'detail', 'token'];
 
     /**
      * Creates a new instance of the model.

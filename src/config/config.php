@@ -259,4 +259,24 @@ return [
         //'testPass'            =>  'GatewayPass',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Gatewall payment callback
+    |--------------------------------------------------------------------------
+    |
+    | Which route to call for gateway callbacks.
+    |
+    */
+    'callback_route' => 'shop.callback',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Redirect route after callback
+    |--------------------------------------------------------------------------
+    |
+    | Which route to call after the callback has been processed.
+    |
+    */
+    'callback_redirect_route' => '/',
+
 ];

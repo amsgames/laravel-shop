@@ -201,13 +201,14 @@ trait ShopOrderTrait
      *
      * @return object
      */
-    public function placeTransaction($gateway, $transactionId, $detail = '')
+    public function placeTransaction($gateway, $transactionId, $detail = null, $token = null)
     {
         return call_user_func(Config::get('shop.transaction') . '::create', [
             'order_id'          => $this->attributes['id'],
             'gateway'           => $gateway,
             'transaction_id'    => $transactionId,
             'detail'            => $detail,
+            'token'             => $token,
         ]);
     }
 

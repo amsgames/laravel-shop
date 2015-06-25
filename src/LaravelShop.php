@@ -148,14 +148,16 @@ class LaravelShop
                 throw new ShopException('Payment gateway not selected.');
             if (empty($cart)) $cart = Auth::user()->cart;
             $order = $cart->placeOrder();
+            static::$gateway->setCallbacks($order);
             if (static::$gateway->onCharge($order)) {
-                $order->statusCode = 'completed';
+                $order->statusCode = static::$gateway->getTransactionStatusCode();
                 $order->save();
                 // Create transaction
                 $order->placeTransaction(
                     static::$gatewayKey,
                     static::$gateway->getTransactionId(),
-                    static::$gateway->getTransactionDetail()
+                    static::$gateway->getTransactionDetail(),
+                    static::$gateway->getTransactionToken()
                 );
             } else {
                 $order->statusCode = 'failed';
@@ -176,6 +178,45 @@ class LaravelShop
         }
         return $order;
     }
+
+    /**
+     * Handles gateway callbacks.
+     *
+     * @param string $order  Order.
+     * @param string $status Callback status
+     */
+    public static function callback($order, $transaction, $status, $data = null)
+    {
+        try {
+            if (in_array($status, ['success', 'fail'])) {
+                static::$gatewayKey = $transaction->gateway;
+                static::$gateway = static::instanceGateway();
+                if ($status == 'success') {
+                    static::$gateway->onCallbackSuccess($order, $data);
+                    $order->statusCode = static::$gateway->getTransactionStatusCode();
+                    // Create transaction
+                    $order->placeTransaction(
+                        static::$gatewayKey,
+                        static::$gateway->getTransactionId(),
+                        static::$gateway->getTransactionDetail(),
+                        static::$gateway->getTransactionToken()
+                    );
+                } else if ($status == 'fail') {
+                    static::$gateway->onCallbackFail($order, $data);
+                    $order->statusCode = 'failed';
+                }
+                $order->save();
+            }
+        } catch (ShopException $e) {
+            static::setException($e);
+            $order->statusCode = 'failed';
+            $order->save();
+        } catch (GatewayException $e) {
+            static::setException($e);
+            $order->statusCode = 'failed';
+            $order->save();
+        }
+    } 
 
     /**
      * Formats any value to price format set in config.
