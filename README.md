@@ -11,6 +11,7 @@ Laravel Shop is flexible way to add shop functionality to **Laravel 5.1**. Aimed
 Laravel shop adds shopping cart, orders and payments to your new or existing project; letting you transform any model into a shoppable item.
 
 **Supports**
+
 ![PayPal](http://kamleshyadav.com/demo_ky/eventmanagementsystem/assets/front/images/paypal.png)
 
 ## Contents
