@@ -69,10 +69,10 @@ Current version includes:
 Under development:
 
 - Events
-- Guest user cart
 
 On the horizon:
 
+- Guest user cart
 - Shipping orders
 - Coupons
 - Product and variations solution
@@ -81,10 +81,16 @@ On the horizon:
 
 ## Installation
 
-In order to install Laravel Shop, you can run
+With composer
+
+```bash
+composer require amsgames/laravel-shop
+```
+
+Or add
 
 ```json
-"amsgames/laravel-shop": "v0.2.0"
+"amsgames/laravel-shop": "v0.2.5"
 ```
 
 to your composer.json. Then run `composer install` or `composer update`.
