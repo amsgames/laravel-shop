@@ -41,8 +41,9 @@ Add the following test gateways the array in `shop.php` config file:
 
 ```php
 'gateways' => [
-    'testPass'            =>  Amsgames\LaravelShop\Gateways\GatewayPass::class,
-    'testFail'            =>  Amsgames\LaravelShop\Gateways\GatewayFail::class,
+    'testFail'          =>  Amsgames\LaravelShop\Gateways\GatewayFail::class,
+    'testPass'          =>  Amsgames\LaravelShop\Gateways\GatewayPass::class,
+    'testCallback'      =>  Amsgames\LaravelShop\Gateways\GatewayCallback::class,
 ],
 ```
 
