@@ -494,7 +494,7 @@ $formatted = Shop::format(9.99);
 
 With Laravel Shop you can customize things to work your way, although we recommend standarize your purchase or checkout flow as following (will explain how to use the shop methods below):
 
-![Purchase Flow](http://postimg.org/image/vw0v9di1l/)
+![Purchase Flow](http://s12.postimg.org/zfmsz6krh/laravelshop_New_Page.png)
 
 * (Step 1) - User views his cart.
 * (Step 2) - Continues into selecting the gateway to use.
