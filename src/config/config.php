@@ -257,7 +257,7 @@ return [
     */
     'gateways' => [
         'paypal'            =>  Amsgames\LaravelShopGatewayPaypal\GatewayPayPal::class,
-        'paypalExpress'     =>  Amsgames\LaravelShopGatewayPaypal\GatewayPayPalExpress::class,,
+        'paypalExpress'     =>  Amsgames\LaravelShopGatewayPaypal\GatewayPayPalExpress::class,
     ],
 
     /*
