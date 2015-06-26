@@ -153,4 +153,25 @@ interface ShopOrderInterface
      */
     public function placeTransaction($gateway, $transactionId, $detail = '');
 
+    /**
+     * Scopes class by item sku.
+     * Optionally, scopes by status.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query  Query.
+     * @param mixed                                 $sku    Item SKU.
+     *
+     * @return this
+     */
+    public function scopeWhereSKU($query, $sku);
+
+    /**
+     * Scopes class by status codes.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query       Query.
+     * @param array                                 $statusCodes Status.
+     *
+     * @return this
+     */
+    public function scopeWhereStatusIn($query, array $statusCodes);
+
 }

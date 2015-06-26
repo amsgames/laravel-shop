@@ -207,6 +207,7 @@ The `Item` model has the following main attributes:
 - `displayShipping` &mdash; Tax value formatted for shop display. i.e. "$9.99" instead of just "9.99".
 - `displayName` &mdash; Based on the model's item name property.
 - `shopUrl` &mdash; Based on the model's item route property.
+- `wasPurchased` &mdash; Flag that indicates if item was purchased. This base on the status set in config file.
 - `created_at` &mdash; When the item record was created in the database.
 - `updated_at` &mdash; Last time when the item was updated.
 
@@ -712,6 +713,15 @@ To empty cart:
 $cart->clear();
 ```
 
+This methods can be chained:
+
+```php
+$cart->add($product, 5)
+    ->add($product2)
+    ->remove($product3)
+    ->clear();
+```
+
 #### Cart Methods
 
 ```php
@@ -770,6 +780,7 @@ Cart amount calculations:
 		<tr>
 			<td>Subtotal:</td>
 			<td>{{ $cart->displayTotalPrice }}</td>
+            <td>{{ $cart->totalPrice }}</td>
 		</tr>
 		<tr>
 			<td>Shipping:</td>
@@ -785,6 +796,7 @@ Cart amount calculations:
 		<tr>
 			<th>Total:</th>
 			<th>{{ $cart->displayTotal }}</th>
+            <th>{{ $cart->total }}</th>
 		</tr>
 	</tfoot>
 
@@ -841,7 +853,7 @@ Find orders form user:
 // Get orders from specific user ID.
 $orders = Order::findByUser($userId);
 // Get orders from specific user ID and status.
-$canceled_orders = Order::findByUser($userId, 'completed');
+$canceled_orders = Order::findByUser($userId, 'canceled');
 ```
 
 #### Placing Transactions
@@ -876,12 +888,12 @@ $completed_orders = Order::whereUser($userId)
 #### Order Status Codes
 
 Status codes out of the box:
-- `in_creation` &mdash; Order status in creation.
-- `pending` &mdash; i.e. Pending for payment.
-- `in_process` &mdash; i.e. In process of shipping. In process of revision.
-- `completed` &mdash; i.e. When payment has been made and items were delivered to client.
-- `failed` &mdash; i.e. When payment failed.
-- `canceled` &mdash; i.e. When an order has been canceled by the user.
+- `in_creation` &mdash; Order status in creation. Or use `$order->isInCreation`.
+- `pending` &mdash; i.e. Pending for payment. Or use `$order->isPending`.
+- `in_process` &mdash; i.e. In process of shipping. In process of revision. Or use `$order->isInProcess`.
+- `completed` &mdash; i.e. When payment has been made and items were delivered to client. Or use `$order->isCompleted`.
+- `failed` &mdash; i.e. When payment failed. Or use `$order->hasFailed`.
+- `canceled` &mdash; i.e. When an order has been canceled by the user. Or use `$order->isCanceled`.
 
 You can use your own custom status codes. Simply add them manually to the `order_status` database table or create a custom seeder like this:
 
@@ -987,7 +999,7 @@ public function onCharge($order)
     // Custom detail of 1024 chars.
     $this->detail = 'Paypal: success';
 
-    // Custom detail of 1024 chars.
+    // Order status after method call.
     $this->statusCode = 'in_process';
 
     return true;
@@ -1028,7 +1040,7 @@ class GatewayWithCallbacks extends PaymentGateway
         // Sets provider with the callback for successful transactions.
         $provider->setSuccessCallback( $this->callbackSuccess );
 
-        // Sets provider with the callback for successful transactions.
+        // Sets provider with the callback for failed transactions.
         $provider->setFailCallback( $this->callbackFail );
 
         return true;
