@@ -713,7 +713,7 @@ To empty cart:
 $cart->clear();
 ```
 
-This methods can be chained:
+These methods can be chained:
 
 ```php
 $cart->add($product, 5)
@@ -889,11 +889,11 @@ $completed_orders = Order::whereUser($userId)
 
 Status codes out of the box:
 - `in_creation` &mdash; Order status in creation. Or use `$order->isInCreation`.
-- `pending` &mdash; i.e. Pending for payment. Or use `$order->isPending`.
-- `in_process` &mdash; i.e. In process of shipping. In process of revision. Or use `$order->isInProcess`.
-- `completed` &mdash; i.e. When payment has been made and items were delivered to client. Or use `$order->isCompleted`.
-- `failed` &mdash; i.e. When payment failed. Or use `$order->hasFailed`.
-- `canceled` &mdash; i.e. When an order has been canceled by the user. Or use `$order->isCanceled`.
+- `pending` &mdash; Pending for payment. Or use `$order->isPending`.
+- `in_process` &mdash; In process of shipping. In process of revision. Or use `$order->isInProcess`.
+- `completed` &mdash; When payment has been made and items were delivered to client. Or use `$order->isCompleted`.
+- `failed` &mdash; When payment failed. Or use `$order->hasFailed`.
+- `canceled` &mdash; When an order has been canceled by the user. Or use `$order->isCanceled`.
 
 You can use your own custom status codes. Simply add them manually to the `order_status` database table or create a custom seeder like this:
 
@@ -970,7 +970,7 @@ class GatewayPayPal extends PaymentGateway
 }
 ```
 
-The gateway will require those `onCharge` method as minimun. You can add more depending your needs.
+The gateway will require `onCharge` method as minimun. You can add more depending your needs.
 
 Once created, you can add it to the `shop.php` config file, like:
 
@@ -1006,8 +1006,8 @@ public function onCharge($order)
 }
 ```
 - `transactionId` &mdash; Provider's transaction ID, will help identify a transaction.
-- `detail` &mdash; i.e. Custom description for the transaction.
-- `statusCode` &mdash; i.e. Order status code with which to update the order after onCharge has executed. By default is 'completed'.
+- `detail` &mdash; Custom description for the transaction.
+- `statusCode` &mdash; Order status code with which to update the order after onCharge has executed. By default is 'completed'.
 
 ### Callbacks
 
@@ -1081,7 +1081,7 @@ class GatewayWithCallbacks extends PaymentGateway
     }
 }
 ```
-In the example above, `onCharge` instead of creating a completed transaction, it is creating a pending transaction and indicating the provider to which urls to call back with the payment results. By default the shop generates a token and it is used for validations in the callback, you can change the token value to your needs.
+In the example above, `onCharge` instead of creating a completed transaction, it is creating a pending transaction and indicating the provider to which urls to call back with the payment results.
 
 The methods `onCallbackSuccess` and `onCallbackFail` are called by `Shop` when the provider calls back with its reponse, the proper function will be called depending on the callback url used by the provider.
 
