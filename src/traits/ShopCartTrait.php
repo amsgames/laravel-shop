@@ -206,7 +206,7 @@ trait ShopCartTrait
     public function scopeWhereCurrent($query)
     {
         if (Auth::guest()) return $query;
-        return $query->whereUser('user_id', Auth::user()->shopId);
+        return $query->whereUser(Auth::user()->shopId);
     }
 
     /**
