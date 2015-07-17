@@ -56,6 +56,7 @@ Laravel shop adds shopping cart, orders and payments to your new or existing pro
   - [Exceptions](#exception)
 - [License](#license)
 - [Additional Information](#additional-information)
+- [Change Log](#change-log)
 
 ## Scope
 
@@ -89,7 +90,7 @@ composer require amsgames/laravel-shop
 Or add
 
 ```json
-"amsgames/laravel-shop": "v0.2.*"
+"amsgames/laravel-shop": "0.2.*"
 ```
 
 to your composer.json. Then run `composer install` or `composer update`.
@@ -1186,3 +1187,6 @@ Laravel Shop is free software distributed under the terms of the MIT license.
 ## Additional Information
 
 This package's architecture and design was inpired by the **Zizaco/entrust** package, we'll like to thank their contributors for their awesome woek.
+
+## Change Log
+* [v0.2.8](https://github.com/amsgames/laravel-shop/releases/tag/v0.2.8)
