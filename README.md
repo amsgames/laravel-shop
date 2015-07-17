@@ -48,6 +48,8 @@ Laravel shop adds shopping cart, orders and payments to your new or existing pro
     - [Order](#order-1)
         - [Placing Transactions](#placing-transactions)
         - [Order Methods](#order-methods)
+    - [Events](#events)
+        - [Handler Example](#event-handler-example)
 - [Payment Gateway Development](#payment-gateway-development)
   - [Transaction](#transaction-1)
   - [Callbacks](#callbacks)
@@ -65,9 +67,6 @@ Current version includes:
 - Transactions
 - Payment gateways support
 - PayPal
-
-Under development:
-
 - Events
 
 On the horizon:
@@ -118,7 +117,7 @@ Set the configuration values in the `config/auth.php` file. This package will us
 Publish the configuration for this package to further customize table names, model namespaces, currencies and other values. Run the following command:
 
 ```bash
-php artisan laravel-shop:publish
+php artisan vendor:publish
 ```
 
 A `shop.php` file will be created in your app/config directory.
@@ -924,6 +923,72 @@ $myStatusCode = 'my_status';
 if ($order->is($myStatusCode)) {
 	echo 'My custom status work!';
 }
+```
+
+### Events
+
+Laravel Shop follows [Laravel 5 guidelines](http://laravel.com/docs/5.1/events) to fire events, create your handlers and listeners like you would normally do to use them.
+
+| Event  | Description | Data passed |
+| ------------- | ------------- | ------------- |
+| Cart checkout | Event fired after a shop has checkout a cart. | `id` - Cart Id `success` - Checkout result (boolean) |
+| Order placed | Event fired when an order has been placed. | `id` - Order Id |
+| Order completed | Event fired when an order has been completed. | `id` - Order Id |
+| Order status changed | Event fired when an order's status has been changed. | `id` - Order Id `statusCode` - New status `previousStatusCode` - Prev status |
+
+Here are event references:
+
+| Event  | Reference |
+| ------------- | ------------- |
+| Cart checkout | `Amsgames\LaravelShop\Events\CartCheckout` |
+| Order placed | `Amsgames\LaravelShop\Events\OrderPlaced` |
+| Order completed | `Amsgames\LaravelShop\Events\OrderCompleted` |
+| Order status changed | `Amsgames\LaravelShop\Events\OrderStatusChanged` |
+
+#### Event Handler Example
+
+An example of how to use the event in a handler:
+
+```php
+<?php
+
+namespace App\Handlers\Events;
+
+use App\Order;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+
+use Amsgames\LaravelShop\Events\OrderCompleted;
+
+class NotifyPurchase implements ShouldQueue
+{
+    use InteractsWithQueue;
+
+    /**
+     * Handle the event.
+     *
+     * @param  OrderPurchased $event
+     * @return void
+     */
+    public function handle(OrderCompleted $event)
+    {
+        // The order ID
+        echo $event->id;
+
+        // Get order model object
+        $order = Order::find($event->id);
+
+        // My code here...
+    }
+}
+```
+
+Remember to register your handles and listeners at the Event Provider:
+
+```php
+        'Amsgames\LaravelShop\Events\OrderCompleted' => [
+            'App\Handlers\Events\NotifyPurchase',
+        ],
 ```
 
 ## Payment Gateway Development

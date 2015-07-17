@@ -20,6 +20,10 @@ use Illuminate\Support\Facades\Log;
 use Amsgames\LaravelShop\Exceptions\CheckoutException;
 use Amsgames\LaravelShop\Exceptions\GatewayException;
 use Amsgames\LaravelShop\Exceptions\ShopException;
+use Amsgames\LaravelShop\Events\CartCheckout;
+use Amsgames\LaravelShop\Events\OrderCompleted;
+use Amsgames\LaravelShop\Events\OrderPlaced;
+use Amsgames\LaravelShop\Events\OrderStatusChanged;
 
 class LaravelShop
 {
@@ -115,6 +119,7 @@ class LaravelShop
      */
     public static function checkout($cart = null)
     {
+        $success = true;
         try {
             if (empty(static::$gatewayKey)) {
                 throw new ShopException('Payment gateway not selected.');
@@ -123,15 +128,17 @@ class LaravelShop
             static::$gateway->onCheckout($cart);
         } catch (ShopException $e) {
             static::setException($e);
-            return false;
+            $success = false;
         } catch (CheckoutException $e) {
             static::$exception = $e;
-            return false;
+            $success = false;
         } catch (GatewayException $e) {
             static::$exception = $e;
-            return false;
+            $success = false;
         }
-        return true;
+        if ($cart)
+            \event(new CartCheckout($cart->id, $success));
+        return $success;
     }
 
     /**
@@ -148,6 +155,8 @@ class LaravelShop
                 throw new ShopException('Payment gateway not selected.');
             if (empty($cart)) $cart = Auth::user()->cart;
             $order = $cart->placeOrder();
+            $statusCode = $order->statusCode;
+            \event(new OrderPlaced($order->id));
             static::$gateway->setCallbacks($order);
             if (static::$gateway->onCharge($order)) {
                 $order->statusCode = static::$gateway->getTransactionStatusCode();
@@ -159,6 +168,9 @@ class LaravelShop
                     static::$gateway->getTransactionDetail(),
                     static::$gateway->getTransactionToken()
                 );
+                // Fire event
+                if ($order->isCompleted)
+                    \event(new OrderCompleted($order->id));
             } else {
                 $order->statusCode = 'failed';
                 $order->save();
@@ -176,7 +188,12 @@ class LaravelShop
                 $order->save();
             }
         }
-        return $order;
+        if ($order) {
+            static::checkStatusChange($order, $statusCode);
+            return $order;
+        } else {
+            return;
+        }
     }
 
     /**
@@ -187,6 +204,7 @@ class LaravelShop
      */
     public static function callback($order, $transaction, $status, $data = null)
     {
+        $statusCode = $order->statusCode;
         try {
             if (in_array($status, ['success', 'fail'])) {
                 static::$gatewayKey = $transaction->gateway;
@@ -201,6 +219,9 @@ class LaravelShop
                         static::$gateway->getTransactionDetail(),
                         static::$gateway->getTransactionToken()
                     );
+                    // Fire event
+                    if ($order->isCompleted)
+                        \event(new OrderCompleted($order->id));
                 } else if ($status == 'fail') {
                     static::$gateway->onCallbackFail($order, $data);
                     $order->statusCode = 'failed';
@@ -216,6 +237,7 @@ class LaravelShop
             $order->statusCode = 'failed';
             $order->save();
         }
+        static::checkStatusChange($order, $statusCode);
     } 
 
     /**
@@ -282,5 +304,17 @@ class LaravelShop
         if (empty(static::$gatewayKey)) return;
         $className = '\\' . Config::get('shop.gateways')[static::$gatewayKey];
         return new $className(static::$gatewayKey);
+    }
+
+    /**
+     * Check on order status differences and fires event.
+     * @param object $order Order.
+     * @param string $prevStatusCode Previous status code.
+     * @return void 
+     */
+    protected static function checkStatusChange($order, $prevStatusCode)
+    {
+        if (!empty($prevStatusCode) && $order->statusCode != $prevStatusCode)
+            \event(new OrderStatusChanged($order->id, $order->statusCode, $prevStatusCode));
     }
 }
