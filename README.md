@@ -936,7 +936,7 @@ Laravel Shop follows [Laravel 5 guidelines](http://laravel.com/docs/5.1/events) 
 | Order completed | Event fired when an order has been completed. | `id` - Order Id |
 | Order status changed | Event fired when an order's status has been changed. | `id` - Order Id `statusCode` - New status `previousStatusCode` - Prev status |
 
-Here are event references:
+Here are the events references:
 
 | Event  | Reference |
 | ------------- | ------------- |
@@ -947,7 +947,7 @@ Here are event references:
 
 #### Event Handler Example
 
-An example of how to use the event in a handler:
+An example of how to use an event in a handler:
 
 ```php
 <?php
