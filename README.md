@@ -89,7 +89,7 @@ composer require amsgames/laravel-shop
 Or add
 
 ```json
-"amsgames/laravel-shop": "v0.2.7"
+"amsgames/laravel-shop": "v0.2.*"
 ```
 
 to your composer.json. Then run `composer install` or `composer update`.
