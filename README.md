@@ -12,7 +12,7 @@ Laravel shop adds shopping cart, orders and payments to your new or existing pro
 
 **Supports**
 
-![PayPal](http://kamleshyadav.com/demo_ky/eventmanagementsystem/assets/front/images/paypal.png)
+![PayPal](http://kamleshyadav.com/demo_ky/eventmanagementsystem/assets/front/images/paypal.png) ![Omnipay](http://s18.postimg.org/g68f3fs09/omnipay.jpg)
 
 ## Contents
 
@@ -30,6 +30,7 @@ Laravel shop adds shopping cart, orders and payments to your new or existing pro
     - [Dump Autoload](#dump-autoload)
     - [Payment Gateways](#payment-gateways)
         - [PayPal](#paypal)
+        - [Omnipay](#omnipay)
 - [Usage](#usage)
     - [Shop](#shop)
         - [Purchase Flow](#purchase-flow)
@@ -485,7 +486,11 @@ Laravel Shop comes with PayPal support out of the box. You can use PayPal's `Dir
 
 To configure PayPal and know how to use the gateways, please visit the [PayPal Gateway Package](https://github.com/amsgames/laravel-shop-gateway-paypal) page. 
 
-**And you are ready to go.**
+#### Omnipay
+
+Install [Omnipay Gateway](https://github.com/amostajo/laravel-shop-gateway-omnipay) to enable other payment services like 2Checkout, Authorize.net, Stripe and to name a few.
+
+You might need to get some extra understanding about how [Omnipay](https://github.com/thephpleague/omnipay) works.
 
 ## Usage
 
