@@ -2,7 +2,7 @@
     "name": "amsgames/laravel-shop",
     "description": "Package set to provide shop or e-commerce functionality (such as CART, ORDERS, TRANSACTIONS and ITEMS) to Laravel for customizable builds.",
     "license": "MIT",
-    "keywords": ["shop","laravel","cart","orders","transactions"],
+    "keywords": ["shop","laravel","cart","orders","transactions","paypal","e-commerce","shopping cart","ecommerce","shopping"],
     "authors": [
         {
             "name": "Amsgames, LLC",
@@ -17,13 +17,7 @@
         "php": ">=5.5.9",
         "illuminate/console": "~5.0",
         "illuminate/support": "~5.0",
-        "amsgames/laravel-shop-gateway-paypal": "v1.0.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "~4.1",
-        "mockery/mockery": "dev-master",
-        "illuminate/database": "~5.0",
-        "sami/sami": "dev-master"
+        "amsgames/laravel-shop-gateway-paypal": "1.0.*"
     },
     "autoload": {
         "classmap": [

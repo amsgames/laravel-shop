@@ -12,7 +12,7 @@ Laravel shop adds shopping cart, orders and payments to your new or existing pro
 
 **Supports**
 
-![PayPal](http://kamleshyadav.com/demo_ky/eventmanagementsystem/assets/front/images/paypal.png)
+![PayPal](http://kamleshyadav.com/demo_ky/eventmanagementsystem/assets/front/images/paypal.png) ![Omnipay](http://s18.postimg.org/g68f3fs09/omnipay.jpg)
 
 ## Contents
 
@@ -30,6 +30,7 @@ Laravel shop adds shopping cart, orders and payments to your new or existing pro
     - [Dump Autoload](#dump-autoload)
     - [Payment Gateways](#payment-gateways)
         - [PayPal](#paypal)
+        - [Omnipay](#omnipay)
 - [Usage](#usage)
     - [Shop](#shop)
         - [Purchase Flow](#purchase-flow)
@@ -56,6 +57,7 @@ Laravel shop adds shopping cart, orders and payments to your new or existing pro
   - [Exceptions](#exception)
 - [License](#license)
 - [Additional Information](#additional-information)
+- [Change Log](#change-log)
 
 ## Scope
 
@@ -89,7 +91,7 @@ composer require amsgames/laravel-shop
 Or add
 
 ```json
-"amsgames/laravel-shop": "v0.2.*"
+"amsgames/laravel-shop": "0.2.*"
 ```
 
 to your composer.json. Then run `composer install` or `composer update`.
@@ -484,7 +486,11 @@ Laravel Shop comes with PayPal support out of the box. You can use PayPal's `Dir
 
 To configure PayPal and know how to use the gateways, please visit the [PayPal Gateway Package](https://github.com/amsgames/laravel-shop-gateway-paypal) page. 
 
-**And you are ready to go.**
+#### Omnipay
+
+Install [Omnipay Gateway](https://github.com/amostajo/laravel-shop-gateway-omnipay) to enable other payment services like 2Checkout, Authorize.net, Stripe and to name a few.
+
+You might need to get some extra understanding about how [Omnipay](https://github.com/thephpleague/omnipay) works.
 
 ## Usage
 
@@ -1186,3 +1192,6 @@ Laravel Shop is free software distributed under the terms of the MIT license.
 ## Additional Information
 
 This package's architecture and design was inpired by the **Zizaco/entrust** package, we'll like to thank their contributors for their awesome woek.
+
+## Change Log
+* [v0.2.8](https://github.com/amsgames/laravel-shop/releases/tag/v0.2.8)
