@@ -32,7 +32,7 @@ trait ShopTransactionTrait
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeWhereUser($query, $user_id)
+    public function scopeWhereUser($query, $userId)
     {
         return $query->join(
                 Config::get('shop.order_table'),
@@ -40,6 +40,6 @@ trait ShopTransactionTrait
                 '=',
                 Config::get('shop.transaction_table') . '.order_id'
             )
-            ->where(Config::get('shop.order_table') . '.user_id', $user_id);
+            ->where(Config::get('shop.order_table') . '.user_id', $userId);
     }
 }
