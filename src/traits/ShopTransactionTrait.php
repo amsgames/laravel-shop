@@ -40,6 +40,6 @@ trait ShopTransactionTrait
                 '=',
                 Config::get('shop.transaction_table') . '.order_id'
             )
-            ->where(Config::get('shop.order_table') . '.user_id', $user_id);
+            ->where(Config::get('shop.order_table') . '.user_id', $userId);
     }
 }
