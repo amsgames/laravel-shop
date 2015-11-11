@@ -35,7 +35,7 @@ class LaravelShopProvider extends ServiceProvider
 
         // Publish config files
         $this->publishes([
-            __DIR__ . '/config/config.php' => config_path('shop.php'),
+            __DIR__ . '/Config/config.php' => config_path('shop.php'),
         ]);
 
         // Register commands
@@ -77,7 +77,7 @@ class LaravelShopProvider extends ServiceProvider
     private function mergeConfig()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/config/config.php', 'shop'
+            __DIR__ . '/Config/config.php', 'shop'
         );
     }
 
