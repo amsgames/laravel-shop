@@ -21,7 +21,7 @@
     },
     "autoload": {
         "classmap": [
-            "src/commands"
+            "src/Commands"
         ],
         "psr-4": {
             "Amsgames\\LaravelShop\\": "src"
