@@ -107,7 +107,10 @@ class LaravelShop
      */
     public static function getGateway()
     {
-        return Session::get('shop.gateway')[0]; 
+        $gateways = Session::get('shop.gateway');
+        return $gateways && count($gateways) > 0
+            ? $gateways[count($gateways) - 1]
+            : null;
     }
 
     /**
@@ -180,12 +183,26 @@ class LaravelShop
             if (isset($order)) {
                 $order->statusCode = 'failed';
                 $order->save();
+                // Create failed transaction
+                $order->placeTransaction(
+                    static::$gatewayKey,
+                    uniqid(),
+                    static::$exception->getMessage(),
+                    $order->statusCode
+                );
             }
         } catch (GatewayException $e) {
             static::$exception = $e;
             if (isset($order)) {
                 $order->statusCode = 'failed';
                 $order->save();
+                // Create failed transaction
+                $order->placeTransaction(
+                    static::$gatewayKey,
+                    uniqid(),
+                    static::$exception->getMessage(),
+                    $order->statusCode
+                );
             }
         }
         if ($order) {
