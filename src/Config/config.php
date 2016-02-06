@@ -40,7 +40,7 @@ return [
     | This is the table used by LaravelShop to save cart data to the database.
     |
     */
-    'cart_table' => 'cart',
+    'cart_table' => 'carts',
 
     /*
     |--------------------------------------------------------------------------
