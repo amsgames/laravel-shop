@@ -38,4 +38,15 @@ trait ShopCouponTrait
         return $query->where('code', $code)->first();
     }
 
+    /**
+     * Scopes to get coupons for cart.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWhereCart($query, $cartId)
+    {
+        $ccTable = Config::get('shop.cart_coupon_table');
+        return $query->join($ccTable, $ccTable . '.coupon_id', '=', Config::get('shop.coupon_table') . '.id')
+            ->where($ccTable . '.cart_id', $cartId);
+    }
 }
