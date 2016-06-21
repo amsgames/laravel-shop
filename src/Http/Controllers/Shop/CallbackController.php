@@ -10,10 +10,14 @@ use Amsgames\LaravelShop\Http\Controllers\Controller;
 class CallbackController extends Controller
 {
     /**
-     * Create a new user instance after a valid registration.
+     * Process payment callback.
      *
-     * @param  array  $data
-     * @return User
+     * @param Request $request   Request.
+     * @param string  $status    Callback status.
+     * @param int     $id        Order ID.
+     * @param string  $shoptoken Transaction token for security.
+     *
+     * @return redirect
      */
     protected function process(Request $request, $status, $id, $shoptoken)
     {

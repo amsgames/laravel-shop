@@ -81,7 +81,7 @@ class CallbackTest extends TestCase
 	/**
 	 * Tests success callback.
 	 */
-	public function testSuccessFail()
+	public function testFailCallback()
 	{
 		Shop::setGateway('testCallback');
 

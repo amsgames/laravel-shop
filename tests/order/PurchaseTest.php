@@ -99,4 +99,35 @@ class PurchaseTest extends TestCase
 
 		$user->delete();
 	}
+	/**
+	 * Tests if failed transactions are being created.
+	 */
+	public function testFailedTransactions()
+	{
+		// Prepare
+
+		$user = factory('App\User')->create(['password' => Hash::make('laravel-shop')]);
+
+		$bool = Auth::attempt(['email' => $user->email, 'password' => 'laravel-shop']);
+
+		$cart = App\Cart::current()
+			->add(['sku' => '0001', 'price' => 1.99])
+			->add(['sku' => '0002', 'price' => 2.99]);
+
+		Shop::setGateway('testFail');
+
+		// Beging test
+
+		$order = Shop::placeOrder();
+
+		$this->assertNotNull($order);
+
+		$this->assertNotEmpty($order->id);
+
+		$this->assertTrue($order->hasFailed);
+
+		$this->assertEquals(count($order->transactions), 1);
+
+		$user->delete();
+	}
 }

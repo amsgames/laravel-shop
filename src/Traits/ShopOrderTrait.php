@@ -29,7 +29,7 @@ trait ShopOrderTrait
         parent::boot();
 
         static::deleting(function($user) {
-            if (!method_exists(Config::get('auth.model'), 'bootSoftDeletingTrait')) {
+            if (!method_exists(Config::get('auth.providers.users.model'), 'bootSoftDeletingTrait')) {
                 $user->items()->sync([]);
             }
 
@@ -44,7 +44,7 @@ trait ShopOrderTrait
      */
     public function user()
     {
-        return $this->belongsTo(Config::get('auth.model'), 'user_id');
+        return $this->belongsTo(Config::get('auth.providers.users.model'), 'user_id');
     }
 
     /**
@@ -91,6 +91,25 @@ trait ShopOrderTrait
     }
 
     /**
+     * Scopes class by item sku.
+     * Optionally, scopes by status.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query  Query.
+     * @param mixed                                 $sku    Item SKU.
+     *
+     * @return this
+     */
+    public function scopeWhereSKU($query, $sku) {
+        return $query->join(
+                config('shop.item_table'), 
+                config('shop.item_table') . '.order_id', 
+                '=', 
+                $this->table . '.id'
+            )
+            ->where(config('shop.item_table') . '.sku', $sku);
+    }
+
+    /**
      * Scopes class by user ID and returns object.
      * Optionally, scopes by status.
      *
@@ -101,6 +120,18 @@ trait ShopOrderTrait
      */
     public function scopeWhereStatus($query, $statusCode) {
         return $query = $query->where('statusCode', $statusCode);
+    }
+
+    /**
+     * Scopes class by status codes.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query       Query.
+     * @param array                                 $statusCodes Status.
+     *
+     * @return this
+     */
+    public function scopeWhereStatusIn($query, array $statusCodes) {
+        return $query = $query->whereIn('statusCode', $statusCodes);
     }
 
     /**
