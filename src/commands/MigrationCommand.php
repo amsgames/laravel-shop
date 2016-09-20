@@ -127,8 +127,13 @@ class MigrationCommand extends Command
     {
         $migrationFile = base_path('/database/migrations') . '/' . date('Y_m_d_His') . '_shop_setup_tables.php';
 
-        $usersTable  = Config::get('auth.table');
-        $userModel   = Config::get('auth.model');
+        if(strpos(app()::VERSION, '5.1')) {
+            $usersTable  = Config::get('auth.table');
+            $userModel   = Config::get('auth.model');
+        } else {
+            $usersTable  = Config::get('auth.providers.users.table');
+            $userModel   = Config::get('auth.providers.users.model');
+        }
         $userKeyName = (new $userModel())->getKeyName();
 
         $data = array_merge($data, compact('usersTable', 'userKeyName'));
