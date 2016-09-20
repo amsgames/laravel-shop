@@ -88,7 +88,7 @@ class LaravelShopProvider extends ServiceProvider
      */
     private function registerCommands()
     {
-        $this->app->bindShared('command.laravel-shop.migration', function ($app) {
+        $this->app->singleton('command.laravel-shop.migration', function ($app) {
             return new MigrationCommand();
         });
     }
