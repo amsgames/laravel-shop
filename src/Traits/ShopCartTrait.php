@@ -6,8 +6,8 @@ namespace Amsgames\LaravelShop\Traits;
  * This file is part of LaravelShop,
  * A shop solution for Laravel.
  *
- * @author Alejandro Mostajo
- * @copyright Amsgames, LLC
+ * @author Alejandro Mostajo, Simon Duduica.
+ * @copyright Amsgames, LLC, Maribal Inc.
  * @license MIT
  * @package Amsgames\LaravelShop
  */
@@ -184,6 +184,79 @@ trait ShopCartTrait
     }
 
     /**
+     * Many-to-Many relations with Coupon.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function coupons()
+    {
+        return $this->belongsToMany(Config::get('shop.coupon'), 'cart_coupons', 'cart_id', 'coupon_id');
+    }
+
+    /**
+     * One-to-Many relations with CartCoupon.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function cartCoupons()
+    {
+        return $this->hasMany(Config::get('shop.cart_coupon'));
+    }
+
+    /**
+     * Adds coupon to cart.
+     *
+     * @param mixed $coupon Coupon to add.
+     */
+    public function addCoupon($coupon)
+    {
+        if (!is_array($coupon) && !$coupon->id ) return;
+        // get coupon
+        $cartCoupon = $this->getCartCoupon(is_array($coupon) ? $coupon['code'] : $coupon->code);
+        if (empty($cartCoupon)) {
+            $cartCoupon = call_user_func( Config::get('shop.cart_coupon') . '::create', [
+                'cart_id'       => $this->attributes['id'],
+                'coupon_id'           => is_array($coupon) ? $coupon['id'] : $coupon->id,
+            ]);
+        }
+        $this->resetCalculations();
+        return $this;
+    }
+
+    /**
+     * Removes a coupon from the cart.
+     * Returns flag indicating if removal was successful.
+     *
+     * @param mixed $coupon Coupon to remove.
+     *
+     * @return bool
+     */
+    public function removeCoupon($coupon)
+    {
+        $cartCoupon = call_user_func( Config::get('shop.cart_coupon') . '::take', 1);
+        $cartCoupon->where('cart_id', $this->attributes['id'])->where('coupon_id', $coupon->id)->delete();
+        $this->resetCalculations();
+        return $this;
+    }
+
+    /**
+     * Checks if the cart has a coupon.
+     *
+     * @param string|array $code Coupon code.
+     *
+     * @return bool
+     */
+    public function hasCoupon($code)
+    {
+        foreach ($this->coupons as $coupon) {
+            if ($coupon->code == $code) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Scope class by a given user ID.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query  Query.
@@ -272,6 +345,15 @@ trait ShopCartTrait
             // Update
             $this->items[$i]->save();
         }
+        // Map discount items into order
+        for ($i = count($this->cartCoupons) - 1; $i >= 0; --$i) {
+            // Attach to order
+            $this->cartCoupons[$i]->order_id  = $order->id;
+            // Remove from cart
+            $this->cartCoupons[$i]->cart_id   = null;
+            // Update
+            $this->cartCoupons[$i]->save();
+        }
         $this->resetCalculations();
         return $order;
     }
@@ -302,6 +384,22 @@ trait ShopCartTrait
         return $item->where('sku', $sku)
             ->where('cart_id', $this->attributes['id'])
             ->first();
+    }
+
+    private function getCartCoupon($code)
+    {
+        //$builder = call_user_func( Config::get('shop.cart_coupon') . '::take', 1);
+        $cartCoupon = DB::table(Config::get('shop.cart_coupon_table'))->select()
+            ->join(
+                Config::get('shop.coupon_table'),
+                Config::get('shop.coupon_table') . '.id',
+                '=',
+                Config::get('shop.cart_coupon_table') . '.coupon_id'
+            )
+            ->where('cart_id', $this->attributes['id'])
+            ->where('code', '=', $code);
+
+        return $cartCoupon->first();
     }
 
 }

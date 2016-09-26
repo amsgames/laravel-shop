@@ -6,8 +6,8 @@ namespace Amsgames\LaravelShop\Contracts;
  * This file is part of LaravelShop,
  * A shop solution for Laravel.
  *
- * @author Alejandro Mostajo
- * @copyright Amsgames, LLC
+ * @author Alejandro Mostajo, Simon Duduica.
+ * @copyright Amsgames, LLC, Maribal Inc.
  * @license MIT
  * @package Amsgames\LaravelShop
  */
@@ -57,6 +57,39 @@ interface ShopCartInterface
      * @return bool
      */
     public function hasItem($sku, $requireAll = false);
+
+    /**
+     * Many-to-Many relations with Coupon.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function coupons();
+
+    /**
+     * Adds coupon to cart.
+     *
+     * @param mixed $coupon     Coupon to add.
+     */
+    public function addCoupon($coupon);
+
+    /**
+     * Removes a coupon from the cart.
+     * Returns flag indicating if removal was successful.
+     *
+     * @param mixed $coupon     Coupon to remove.
+     *
+     * @return bool
+     */
+    public function removeCoupon($coupon);
+
+    /**
+     * Checks if the cart has a coupon.
+     *
+     * @param string|array $code       Coupon code.
+     *
+     * @return bool
+     */
+    public function hasCoupon($code);
 
     /**
      * Scope to current user cart and returns class model.

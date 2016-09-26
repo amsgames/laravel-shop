@@ -6,21 +6,21 @@ namespace Amsgames\LaravelShop\Models;
  * This file is part of LaravelShop,
  * A shop solution for Laravel.
  *
- * @author Alejandro Mostajo
- * @copyright Amsgames, LLC
+ * @author Simon Duduica
+ * @copyright Maribal.Inc
  * @license MIT
  * @package Amsgames\LaravelShop
  */
 
-use Amsgames\LaravelShop\Contracts\ShopCartInterface;
-use Amsgames\LaravelShop\Traits\ShopCartTrait;
-use Amsgames\LaravelShop\Traits\ShopCalculationsTrait;
+use Amsgames\LaravelShop\Contracts\ShopCouponInterface;
+use Amsgames\LaravelShop\Traits\ShopCouponTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
-class ShopCartModel extends Model implements ShopCartInterface
+class ShopCartCouponModel extends Model implements ShopCartCouponInterface
 {
-    use ShopCartTrait, ShopCalculationsTrait;
+
+    use ShopCartCouponTrait;
 
     /**
      * The database table used by the model.
@@ -34,7 +34,7 @@ class ShopCartModel extends Model implements ShopCartInterface
      *
      * @var array
      */
-    protected $fillable = ['user_id'];
+    protected $fillable = ['cart_id', 'coupon_id'];
 
     /**
      * Creates a new instance of the model.
@@ -44,7 +44,7 @@ class ShopCartModel extends Model implements ShopCartInterface
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->table = Config::get('shop.cart_table');
+        $this->table = Config::get('shop.cart_coupon_table');
     }
 
 }

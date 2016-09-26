@@ -6,8 +6,8 @@ namespace Amsgames\LaravelShop\Traits;
  * This file is part of LaravelShop,
  * A shop solution for Laravel.
  *
- * @author Alejandro Mostajo
- * @copyright Amsgames, LLC
+ * @author Alejandro Mostajo, Simon Duduica.
+ * @copyright Amsgames, LLC, Maribal Inc.
  * @license MIT
  * @package Amsgames\LaravelShop
  */
@@ -75,7 +75,10 @@ trait ShopCalculationsTrait
      *
      * @return float
      */
-    public function getTotalDiscountAttribute() { /* TODO */ }
+    public function getTotalDiscountAttribute() {
+        if (empty($this->shopCalculations)) $this->runCalculations();
+        return round($this->shopCalculations->totalDiscount, 2);
+    }
 
     /**
      * Returns total amount to be charged base on total price, tax and discount.
@@ -85,7 +88,7 @@ trait ShopCalculationsTrait
     public function getTotalAttribute()
     {
         if (empty($this->shopCalculations)) $this->runCalculations();
-        return $this->totalPrice + $this->totalTax + $this->totalShipping;
+        return $this->totalPrice - $this->totalDiscount + $this->totalTax + $this->totalShipping;
     }
 
     /**
@@ -123,7 +126,9 @@ trait ShopCalculationsTrait
      *
      * @return string
      */
-    public function getDisplayTotalDiscountAttribute() { /* TODO */ }
+    public function getDisplayTotalDiscountAttribute() {
+        return Shop::format($this->totalDiscount);
+    }
 
     /**
      * Returns formatted total amount to be charged base on total price, tax and discount.
@@ -158,21 +163,49 @@ trait ShopCalculationsTrait
             $this->shopCalculations = Cache::get($cacheKey);
             return $this->shopCalculations;
         }
-        $this->shopCalculations = DB::table($this->table)
+
+        $itemTable = Config::get('shop.item_table');
+        $couponTable = Config::get('shop.coupon_table');
+        $ccTable = Config::get('shop.cart_coupon_table');
+
+        $calc = DB::table($this->table)
             ->select([
-                DB::raw('sum(' . Config::get('shop.item_table') . '.quantity) as itemCount'),
-                DB::raw('sum(' . Config::get('shop.item_table') . '.price * ' . Config::get('shop.item_table') . '.quantity) as totalPrice'),
-                DB::raw('sum(' . Config::get('shop.item_table') . '.tax * ' . Config::get('shop.item_table') . '.quantity) as totalTax'),
-                DB::raw('sum(' . Config::get('shop.item_table') . '.shipping * ' . Config::get('shop.item_table') . '.quantity) as totalShipping')
+                DB::raw("sum({$itemTable}.quantity) as itemCount"),
+                DB::raw("sum({$itemTable}.price * {$itemTable}.quantity) as totalPrice"),
+                DB::raw("sum({$itemTable}.tax * {$itemTable}.quantity) as totalTax"),
+                DB::raw("sum({$itemTable}.shipping * {$itemTable}.quantity) as totalShipping"),
             ])
             ->join(
-                Config::get('shop.item_table'),
-                Config::get('shop.item_table') . '.' . ($this->table == Config::get('shop.order_table') ? 'order_id' : $this->table . '_id'),
+                $itemTable,
+                $itemTable . '.' . ($this->table == Config::get('shop.order_table') ? 'order_id' : $this->table . '_id'),
                 '=',
                 $this->table . '.id'
             )
             ->where($this->table . '.id', $this->attributes['id'])
             ->first();
+
+        $disc = DB::table($this->table)
+            ->select([
+                DB::raw("sum({$couponTable}.value) as totalDiscount"),
+                DB::raw("sum({$couponTable}.discount) as totalDiscountPerc")
+            ])
+            ->join(
+                $ccTable, $ccTable . '.' . ($this->table == Config::get('shop.order_table') ? 'order_id' : $this->table . '_id'),
+                '=',$this->table . '.id', 'left outer'
+            )
+            ->join( $couponTable, Config::get('shop.cart_coupons_table') . '.coupon_id', '=', $couponTable . '.id', 'left outer')
+            ->where($this->table . '.id', $this->attributes['id'])
+            ->first();
+        $calc->totalDiscount = $disc->totalDiscount;
+        $calc->totalDiscountPerc = $disc->totalDiscountPerc;
+
+        if($calc->totalDiscountPerc * $calc->totalPrice / 100.0 > $calc->totalDiscount) {
+            $calc->totalDiscount = (string)($calc->totalDiscountPerc * $calc->totalPrice / 100.0);
+        }
+        $calc->totalTax = $calc->totalPrice == 0 ? '0.00' : (string)round(1.00 * $calc->totalTax *($calc->totalPrice - $calc->totalDiscount) / $calc->totalPrice, 2);
+
+        $this->shopCalculations = $calc;
+
         if (Config::get('shop.cache_calculations')) {
             Cache::put(
                 $cacheKey,
