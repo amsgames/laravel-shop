@@ -85,7 +85,7 @@ On the horizon:
 With composer
 
 ```bash
-composer require amsgames/laravel-shop
+composer require baklysystems/laravel-shop
 ```
 
 Or add
