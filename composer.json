@@ -1,6 +1,6 @@
 {
-    "name": "amsgames/laravel-shop",
-    "description": "Package set to provide shop or e-commerce functionality (such as CART, ORDERS, TRANSACTIONS and ITEMS) to Laravel for customizable builds.",
+    "name": "baklysystems/laravel-shop",
+    "description": "This is just an update for amsgames/laravel-shop to support 5.4 as they don't update it anymore. Package set to provide shop or e-commerce functionality (such as CART, ORDERS, TRANSACTIONS and ITEMS) to Laravel for customizable builds.",
     "license": "MIT",
     "keywords": ["shop","laravel","cart","orders","transactions","paypal","e-commerce","shopping cart","ecommerce","shopping"],
     "authors": [
@@ -11,6 +11,11 @@
         {
             "name": "Alejandro Mostajo",
             "email": "amostajo@gmail.com"
+        }
+        ,
+        {
+            "name": "Mostafa Elbakly",
+            "email": "elbakly@gmail.com"
         }
     ],
     "require": {
