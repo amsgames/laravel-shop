@@ -96,6 +96,18 @@ Or add
 
 to your composer.json. Then run `composer install` or `composer update`.
 
+Then in your `config/auth.php` add `'table' => 'users',` to provdiers.users
+
+```php
+'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\User::class,
+	    'table' => 'users',
+        ],
+
+```
+
 Then in your `config/app.php` add 
 
 ```php
