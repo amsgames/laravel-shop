@@ -115,6 +115,16 @@ class MigrationCommand extends Command
 
         }
     }
+    
+    /**
+     * Execute the console command.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        $this->fire();
+    }
 
     /**
      * Create the migration.
