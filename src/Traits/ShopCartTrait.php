@@ -139,6 +139,7 @@ trait ShopCartTrait
             if (!empty($quantity)) {
                 $cartItem->quantity -= $quantity;
                 $cartItem->save();
+                $this->resetCalculations();
                 if ($cartItem->quantity > 0) return true;
             }
             $cartItem->delete();
