@@ -1,4 +1,4 @@
-LARAVEL SHOP (Laravel 5.4 Package)
+LARAVEL SHOP (Laravel 5.5 Package)
 --------------------------------
 
 [![Latest Stable Version](https://poser.pugx.org/amsgames/laravel-shop/v/stable)](https://packagist.org/packages/amsgames/laravel-shop)
