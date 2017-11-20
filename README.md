@@ -1,4 +1,4 @@
-LARAVEL SHOP (Laravel 5.1 Package)
+LARAVEL SHOP (Laravel 5.5 Package)
 --------------------------------
 
 [![Latest Stable Version](https://poser.pugx.org/amsgames/laravel-shop/v/stable)](https://packagist.org/packages/amsgames/laravel-shop)
@@ -6,7 +6,7 @@ LARAVEL SHOP (Laravel 5.1 Package)
 [![Latest Unstable Version](https://poser.pugx.org/amsgames/laravel-shop/v/unstable)](https://packagist.org/packages/amsgames/laravel-shop)
 [![License](https://poser.pugx.org/amsgames/laravel-shop/license)](https://packagist.org/packages/amsgames/laravel-shop)
 
-Laravel Shop is flexible way to add shop functionality to **Laravel 5.1**. Aimed to be the e-commerce solution for artisans.
+Laravel Shop is flexible way to add shop functionality to **Laravel 5.4**. Aimed to be the e-commerce solution for artisans.
 
 Laravel shop adds shopping cart, orders and payments to your new or existing project; letting you transform any model into a shoppable item.
 
@@ -85,7 +85,7 @@ On the horizon:
 With composer
 
 ```bash
-composer require amsgames/laravel-shop
+composer require baklysystems/laravel-shop
 ```
 
 Or add
@@ -95,6 +95,18 @@ Or add
 ```
 
 to your composer.json. Then run `composer install` or `composer update`.
+
+Then in your `config/auth.php` add `'table' => 'users',` to provdiers.users
+
+```php
+'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\User::class,
+	    'table' => 'users',
+        ],
+
+```
 
 Then in your `config/app.php` add 
 
@@ -879,7 +891,7 @@ $transaction = $order->placeTransaction(
 ```php
 $completed = $order->isCompleted
 // Checks if order is in a specific status.
-$success = $order->is('completed');
+$success = $order->statusCodeIs('completed');
 
 // Quering
 // Get orders from specific user ID.
@@ -926,7 +938,7 @@ Then use it like:
 ```php
 $myStatusCode = 'my_status';
 
-if ($order->is($myStatusCode)) {
+if ($order->statusCodeIs($myStatusCode)) {
 	echo 'My custom status work!';
 }
 ```
