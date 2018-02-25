@@ -27,5 +27,15 @@
             "Amsgames\\LaravelShop\\": "src"
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "extra": {
+    "laravel": {
+        "providers": [
+            "ITwrx\\LaravelShop\\LaravelShopProvider"
+        ],
+        "aliases": {
+            "Shop": "ITwrx\\LaravelShop\\LaravelShopFacade"
+        }
+    }
+}
 }
