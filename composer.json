@@ -1,5 +1,5 @@
 {
-    "name": "amsgames/laravel-shop",
+    "name": "ITwrx/laravel-shop",
     "description": "Package set to provide shop or e-commerce functionality (such as CART, ORDERS, TRANSACTIONS and ITEMS) to Laravel for customizable builds.",
     "license": "MIT",
     "keywords": ["shop","laravel","cart","orders","transactions","paypal","e-commerce","shopping cart","ecommerce","shopping"],
