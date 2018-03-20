@@ -1,5 +1,5 @@
 {
-    "name": "amsgames/laravel-shop",
+    "name": "ITwrx/laravel-shop",
     "description": "Package set to provide shop or e-commerce functionality (such as CART, ORDERS, TRANSACTIONS and ITEMS) to Laravel for customizable builds.",
     "license": "MIT",
     "keywords": ["shop","laravel","cart","orders","transactions","paypal","e-commerce","shopping cart","ecommerce","shopping"],
@@ -17,7 +17,7 @@
         "php": ">=5.5.9",
         "illuminate/console": "~5.0",
         "illuminate/support": "~5.0",
-        "amsgames/laravel-shop-gateway-paypal": "1.0.*"
+        "ITwrx/laravel-shop-gateway-paypal": "1.0.*"
     },
     "autoload": {
         "classmap": [
@@ -27,5 +27,15 @@
             "Amsgames\\LaravelShop\\": "src"
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "extra": {
+    "laravel": {
+        "providers": [
+            "ITwrx\\LaravelShop\\LaravelShopProvider"
+        ],
+        "aliases": {
+            "Shop": "ITwrx\\LaravelShop\\LaravelShopFacade"
+        }
+    }
+}
 }

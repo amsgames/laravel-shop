@@ -7,7 +7,7 @@
     "hash": "fff0c5ff15d79f87bda8c01f92af4404",
     "packages": [
         {
-            "name": "amsgames/laravel-shop-gateway-paypal",
+            "name": "ITwrx/laravel-shop-gateway-paypal",
             "version": "1.0.x-dev",
             "source": {
                 "type": "git",

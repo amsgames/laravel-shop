@@ -1,4 +1,4 @@
-LARAVEL SHOP (Laravel 5.1 Package)
+ITwrx fork of LARAVEL SHOP (minor changes for Laravel 5.2 Compatibility)
 --------------------------------
 
 [![Latest Stable Version](https://poser.pugx.org/amsgames/laravel-shop/v/stable)](https://packagist.org/packages/amsgames/laravel-shop)
@@ -6,7 +6,7 @@ LARAVEL SHOP (Laravel 5.1 Package)
 [![Latest Unstable Version](https://poser.pugx.org/amsgames/laravel-shop/v/unstable)](https://packagist.org/packages/amsgames/laravel-shop)
 [![License](https://poser.pugx.org/amsgames/laravel-shop/license)](https://packagist.org/packages/amsgames/laravel-shop)
 
-Laravel Shop is flexible way to add shop functionality to **Laravel 5.1**. Aimed to be the e-commerce solution for artisans.
+Laravel Shop is flexible way to add shop functionality to **Laravel 5.2**. Aimed to be the e-commerce solution for artisans.
 
 Laravel shop adds shopping cart, orders and payments to your new or existing project; letting you transform any model into a shoppable item.
 
