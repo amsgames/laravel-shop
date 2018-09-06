@@ -24,7 +24,7 @@ trait ShopTransactionTrait
      */
     public function order()
     {
-        return $this->belongsTo(Config::get('shop.order_table'), 'order_id');
+        return $this->belongsTo(Config::get('shop.order'), 'order_id');
     }
 
     /**
