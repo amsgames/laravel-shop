@@ -236,7 +236,7 @@ class Cart extends ShopCartModel
 }
 ```
 
-The `Item` model has the following main attributes:
+The `Cart` model has the following main attributes:
 - `id` &mdash; Cart id.
 - `user_id` &mdash; Owner.
 - `items` &mdash; Items in cart.
