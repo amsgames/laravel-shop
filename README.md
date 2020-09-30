@@ -107,7 +107,7 @@ in the `providers` array.
 Then add
 
 ```php
-'Shop'      => Amsgames\LaravelShop\LaravelShopFacade::class,
+'Shop' => Amsgames\LaravelShop\LaravelShopFacade::class,
 ```
     
 in the `aliases` array.
